@@ -2,10 +2,13 @@
 
 const mongoose = require('mongoose');
 const User     = require('./user');
+const moment   = require('moment');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 let itemSchema = new mongoose.Schema({
   Status      :   {type   :   String, enum :  ['Active', 'Expired', 'Sold']},
+  Added       :   {type   :   Date}, //db data
+  SortDate    :   {type   :   Date}, //db data
   Name        :   {type   :   String},
   Condition   :   {type   :   String},
   Quantity    :   {type   :   String},
@@ -14,13 +17,19 @@ let itemSchema = new mongoose.Schema({
   Likers      :   [{type   :   ObjectId, ref   :   'User'}],
   Bids        :   {type   :   Number},
   Bidders     :   [{type    :   ObjectId, ref   :   'User'}],
-  Owner       :   {type   :   ObjectId, ref   :   'User'},
+  Owner       :   {type   :   ObjectId, ref   :   'User', required  :   true },
 })
 
 itemSchema.statics.newItem = (itemObj, cb) => {
   if(!itemObj) return cb({ERROR : `Did note provide Item Details. Try again.`});
   Item.create(itemObj, (err, newItem) =>{
-    err ? cb(err) : cb(null, newItem);
+    if(err) return cb(err);
+
+    let dbData = {
+      Added     : Date.now(),
+      SortDate  : moment().format('llll')
+    }
+
   });
 };
 

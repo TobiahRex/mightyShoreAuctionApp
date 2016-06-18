@@ -27,4 +27,13 @@ router.route('/:id')
   User.removeUser(req.params.id, res.handle);
 });
 
+router.post('/register', (req, res) => {
+  console.log('register body: ', req.body);
+  User.register(req.body, err => {
+    res.status(err ? 400 : 200).send(err || {SUCCESS : `User Registered.`});
+  });
+});
+
+
+
 module.exports = router;
