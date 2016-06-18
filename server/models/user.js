@@ -77,7 +77,6 @@ userSchema.statics.register = function(newUserObj, cb){
 };
 
 userSchema.statics.authenticate = (userObj, cb) => {
-  console.log('userObj: ',userObj);
   User.findOne({Username  :   userObj.Username}, (err, dbUser) => {
     if(err || !dbUser) return cb(err || {ERROR : `Login Failed. Username or Password Inccorect. Try Again.`});
 
@@ -91,13 +90,35 @@ userSchema.statics.authenticate = (userObj, cb) => {
   });
 };
 
+// Auth MiddleWare - Route Access Verification
+userSchema.statics.loginVerify = function(req, res, next){
+
+  console.log('getProfile: cookie = ', req.cookies.accessToken);
+  let token = req.cookies.accessToken;
+  JWT.verify(token, JWT_SECRET, (err, payload) => {
+    if(err) return res.status(400).send({ERROR : `HACKER! You are not Authorized!`});
+    console.log('payload: ', payload);
+    User.findById(payload._id)
+    .select({_Password : false})
+    .exec((err, dbUser)=> {
+      if(err || !dbUser){
+        return
+        res.clearCookie('accessToken')
+        .status(400)
+        .send(err || {error : `User Not Found.`});
+      }; // else
+      req.user = dbUser;
+      next();
+    });
+  });
+};
+
 userSchema.methods.createToken = function(){
+  let thisId = this._id;
+  console.log(thisId);
   let token = JWT.sign({_id : this._id}, JWT_SECRET);
   return token;
 };
 
-
-
 let User = mongoose.model('User', userSchema);
-
 module.exports = User;
