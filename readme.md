@@ -5,4 +5,4 @@
 
 * Online Auction App. with UserAuth, OAuth, Chat & C.R.U.D.
 
-### Hosted : [Heroku](https://git.heroku.com/mighty-shore-12223.git).
+### Hosted on [Heroku](https://git.heroku.com/mighty-shore-12223.git).

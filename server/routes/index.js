@@ -4,7 +4,7 @@ let express = require('express');
 let router  = express.Router();
 let path    = require('path');
 
-router.use('/', (req, res, next) => {
+router.use('/', (req, res) => {
   let indexPath = path.join(__dirname, '../../app/views/index.html');
   res.sendFile(indexPath);
 });
