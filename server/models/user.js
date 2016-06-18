@@ -1,25 +1,19 @@
 'use strict';
 
-let mongoose = require('mongoose');
-// let Item     = require('./item');
-let ObjectId = mongoose.Schema.Types.ObjectId;
+const mongoose = require('mongoose');
+const Item     = require('./item');
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
-let privs = {
-  types   : 'administrator owner bidder'.split(' '),
-  errmsg  : `enum validator failed for path {PATH} with value {VALUE}`
-};
 
 let userSchema = new mongoose.Schema({
-  // access  :   {type : String, enum : adminTypes},
-  name    :   {first : {type: String, required : true} , last : {type: String, required: true}},
-  bio     :   {type : String},
-  avatar  :   {type : String},
-  // social  :   [{
-  //   facebook  : String,
-  //   twitter   : String,
-  //   instagram : String
-  // }]
-  // items   :   [{type : ObjectId, ref : 'Item'}]
+  Access  :   {type     : String, enum : ['administrator', 'owner', 'bidder']},
+  Name    :   {first    : {type : String, required : true} , last : {type   : String, required  : true}},
+  Bio     :   {type     : String},
+  Avatar  :   {type     : String},
+  Social  :   {facebook : String, twitter : String, instagram : String },
+  Likes   :   [{type     :   ObjectId, ref   :   'Item'}],
+  Bids    :   [{type     :   ObjectId, ref   :   'Item'}],
+  Items   :   [{type : ObjectId, ref : 'Item'}]
 });
 
 userSchema.statics.newUser = (userObj, cb) => {
