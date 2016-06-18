@@ -28,12 +28,18 @@ router.route('/:id')
 });
 
 router.post('/register', (req, res) => {
-  console.log('register body: ', req.body);
   User.register(req.body, err => {
     res.status(err ? 400 : 200).send(err || {SUCCESS : `User Registered.`});
   });
 });
 
+router.post('/login', (req, res)=>{
+  User.authenticate(req.body, (err, tokenPkg ) => {
+    console.log('error: ', err);
+    err ? res.status(400).send({ERROR : `${err}`}) :
+    res.cookie('accessToken', tokenPkg.token).send(tokenPkg);
+  });
+});
 
 
 module.exports = router;

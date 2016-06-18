@@ -1,5 +1,6 @@
 'use strict';
 
+require('dotenv').load();
 const mongoose    = require('mongoose');
 const Item        = require('./item');
 const JWT         = require('jsonwebtoken');
@@ -70,23 +71,28 @@ userSchema.statics.register = function(newUserObj, cb){
   BCRYPT.hash(newUserObj._Password, 10, (err, hash)=> {
     if(err) cb(err);
     NewPassword = hash;
-    console.log('new password: ', NewPassword);
     newUserObj._Password = NewPassword;
-    console.log('newUserObj: ', newUserObj);
     this.newUser(newUserObj, cb);
   });
 };
 
-// userSchema.statics.login = (userObj, cb) => {
-//   User.findOne({username  :   userObj.username}, (err, dbUser) => {
-//     if(err || !dbUser) return cb(err || {ERROR : `Login Failed. Username or Password Inccorect. Try Again.`});
-//
-//     if(dbUser._Password)
-//   });
-// };
+userSchema.statics.authenticate = (userObj, cb) => {
+  console.log('userObj: ',userObj);
+  User.findOne({Username  :   userObj.Username}, (err, dbUser) => {
+    if(err || !dbUser) return cb(err || {ERROR : `Login Failed. Username or Password Inccorect. Try Again.`});
 
-userSchema.statics.createToken = () => {
-  let token = jwt.sign({_id : this._id}, JWT_SECRET);
+    BCRYPT.compare(userObj.Password, dbUser._Password, (err, result)=> {
+      if(err || result !== true) return cb({ERROR : 'Login Failed. Username or Password Incorrect. Try Again.'});
+    });
+
+    let token = dbUser.createToken();
+    dbUser._Password = null;
+    cb(null, {token, dbUser});
+  });
+};
+
+userSchema.methods.createToken = function(){
+  let token = JWT.sign({_id : this._id}, JWT_SECRET);
   return token;
 };
 
