@@ -8,7 +8,7 @@ router.route('/')
 .get((req, res) =>{
   User.find({}, res.handle);
 })
-.post(req.body, (req, res)=> {
+.post((req, res)=> {
   User.create(req.body, res.handle);
 });
 

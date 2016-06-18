@@ -2,11 +2,11 @@
 
 let mongoose = require('mongoose');
 let Item     = require('./item');
-let ObjectId = mongooose.Schema.Types.ObjectId;
+let ObjectId = mongoose.Schema.Types.ObjectId;
 
 let privs = {
   types   : 'administrator owner bidder'.split(' '),
-  errmsg  : `enum validator failed for path ${PATH} with value ${VALUE}`
+  errmsg  : `enum validator failed for path {PATH} with value {VALUE}`
 };
 
 let userSchema = new mongoose.Schema({
@@ -19,13 +19,18 @@ let userSchema = new mongoose.Schema({
     twitter   : String,
     instagram : String
   }],
-  items   :   [{type : ObjectId, ref : 'Item'}];
+  items   :   [{type : ObjectId, ref : 'Item'}]
 });
 
 userSchema.statics.create = (userObj, cb) => {
-  if(!userObj) return cb({ERROR : `Did Not Provide User Information.`});
-  
-}
+  !userObj ? cb({ERROR : `Did Not Provide User Information.`}) :
+  User.save(userObj, err => {
+    err ? cb(err) :
+    User.find({}, (err, dbUsers)=> {
+      err ? cb(err) : cb(null, dbUsers);
+    });
+  });
+};
 
 let User = mongoose.model('User', userSchema);
 
