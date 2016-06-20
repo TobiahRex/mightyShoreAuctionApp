@@ -47,9 +47,6 @@ userSchema.statics.getUser = (userId, cb) => {
 
 userSchema.statics.updateUser = (userObj, cb) => {
   if(!userObj.id) return cb({ERROR : `User ID ${userObj.id} not Found. Verify ID.`});
-
-  // REMINDER REMINDER REMINDER REMINDER REMINDER REMINDER REMINDER REMINDER REMINDER - userObj.body NEEDS ALL VALUES from the front end.
-
   User.findByIdAndUpdate(userObj.id, {$set : userObj.body }, (err, outdatedDbUser) => {
     err ? cb(err) : User.findById(outdatedDbUser._id, (err, updatedDbUser) => {
       err ? cb(err) : cb(null, updatedDbUser);
@@ -67,11 +64,9 @@ userSchema.statics.removeUser = (userId, cb) => {
 // Auth MiddleWare
 
 userSchema.statics.register = function(newUserObj, cb){
-  let NewPassword;
   BCRYPT.hash(newUserObj._Password, 10, (err, hash)=> {
     if(err) cb(err);
-    NewPassword = hash;
-    newUserObj._Password = NewPassword;
+    newUserObj._Password = hash;
     this.newUser(newUserObj, cb);
   });
 };
@@ -79,25 +74,21 @@ userSchema.statics.register = function(newUserObj, cb){
 userSchema.statics.authenticate = (userObj, cb) => {
   User.findOne({Username  :   userObj.Username}, (err, dbUser) => {
     if(err || !dbUser) return cb(err || {ERROR : `Login Failed. Username or Password Inccorect. Try Again.`});
-
-    BCRYPT.compare(userObj.Password, dbUser._Password, (err, result)=> {
+    BCRYPT.compare(userObj._Password, dbUser._Password, (err, result)=> {
       if(err || result !== true) return cb({ERROR : 'Login Failed. Username or Password Incorrect. Try Again.'});
     });
 
     let token = dbUser.createToken();
-    dbUser._Password = null;
+    // dbUser._Password = null;
     cb(null, {token, dbUser});
   });
 };
 
 // Auth MiddleWare - Route Access Verification
 userSchema.statics.loginVerify = function(req, res, next){
-
-  console.log('getProfile: cookie = ', req.cookies.accessToken);
   let token = req.cookies.accessToken;
   JWT.verify(token, JWT_SECRET, (err, payload) => {
     if(err) return res.status(400).send({ERROR : `HACKER! You are not Authorized!`});
-    console.log('payload: ', payload);
     User.findById(payload._id)
     .select({_Password : false})
     .exec((err, dbUser)=> {
@@ -115,7 +106,6 @@ userSchema.statics.loginVerify = function(req, res, next){
 
 userSchema.methods.createToken = function(){
   let thisId = this._id;
-  console.log(thisId);
   let token = JWT.sign({_id : this._id}, JWT_SECRET);
   return token;
 };
