@@ -26,11 +26,11 @@ router.route('/login')
 .post((req, res)=> {
   User.authenticate(req.body, (err, tokenPkg ) => {
     if(err) res.status(400).send({ERROR : `${err}`});
-    res.cookie('accessToken', tokenPkg.token).status(200).send({SUCCESS : `User is logged in @ Cookie: ${req.cookies.accessToken}`});
+    res.cookie('accessToken', tokenPkg.token).status(200).send({SUCCESS : `User is logged in @ Cookie: ${res.cookie.accessToken}`});
   });
 })
 .delete((req, res)=> {
-  res.clearCookie('accessToken').status(200).send({SUCCESS : `User has been Logged out. \n Active Cookies: ${res.cookies.accessToken}`});
+  res.clearCookie('accessToken').status(200).send({SUCCESS : `User has been Logged out.`});
 });
 
 

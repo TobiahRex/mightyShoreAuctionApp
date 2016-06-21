@@ -6,9 +6,9 @@ angular.module('MightyShore')
 
   $scope.loginUser = loginObj => {
     Auth.loginUser(loginObj)
-    .then(data =>{
-      // if(!data.SUCCESS) return console.log('login failed.');
-      console.log('login data: ', data);
+    .then(dataObj =>{
+      if(!dataObj.data.SUCCESS) return console.log('login failed.', dataObj.data);
+      console.log('login Successful: ', dataObj);
       $state.go('home');
     });
   };

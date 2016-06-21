@@ -25,7 +25,6 @@ angular.module('MightyShore')
   })
   .state('logout', {
     url             :    '/logout',
-    templateUrl     :    'html/sign_in/logout.html',
     controller      :    'logoutController'
   })
   .state('forgot', {
