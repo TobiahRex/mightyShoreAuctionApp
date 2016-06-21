@@ -6,8 +6,8 @@
   * Backend Routes  : *June 17th, 2016*
   * Angular Setup   : *June 19th, 2016*
   * User Auth       : *June 20th, 2016*
-  * User Schema Upgrades & Profiles   : Tentatively - 21th, June
-  * Item Schema Upgrades              : Tentatively - 21th, June
+  * User Schema Upgrades & Profiles   : Tentatively - 21st, June
+  * Item Schema Upgrades              : Tentatively - 21st, June
 
 ### Description : *Online Auction App. with UserAuth, OAuth, Chat & C.R.U.D.*
 
