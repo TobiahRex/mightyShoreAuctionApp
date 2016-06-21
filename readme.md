@@ -1,8 +1,14 @@
-# "Auction App" - Full Stack M.E.A.N.
+# "Mighty Shore Auction App" - Full Stack M.E.A.N.
+############## *Named after the Heroku url, lols*
 
-###### START    : *June 17th, 2016*
-###### COMPLETE : *TBD*
+##### STARTED   : *June 17th, 2016*
+##### COMPLETED :
+  * Backend Routes  : *June 17th, 2016*
+  * Angular Setup   : *June 19th, 2016*
+  * User Auth       : *June 19th, 2016*
+  * User Schema Upgrades & Profiles   : Tentatively - 20th, June
+  * Item Schema Upgrades              : Tentatively - 20th, June
 
-* Online Auction App. with UserAuth, OAuth, Chat & C.R.U.D.
+### Description : *Online Auction App. with UserAuth, OAuth, Chat & C.R.U.D.*
 
-### Hosted on [Heroku](https://git.heroku.com/mighty-shore-12223.git).
+### Hosted on [Heroku](https://mighty-shore-12223.herokuapp.com/#/).
