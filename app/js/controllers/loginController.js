@@ -7,8 +7,9 @@ angular.module('MightyShore')
   $scope.loginUser = loginObj => {
     Auth.loginUser(loginObj)
     .then(data =>{
-      if(!data.SUCCESS)  /* Sweet Alert Error */ ;      
-      $state.go('/home');
+      // if(!data.SUCCESS) return console.log('login failed.');
+      console.log('login data: ', data);
+      $state.go('home');
     });
   };
   // Auth.getProfile()

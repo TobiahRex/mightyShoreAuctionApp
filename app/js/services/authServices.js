@@ -3,7 +3,7 @@
 angular.module('MightyShore')
 .service('Auth', function($http){
 
-  this.loginUser = userObj => $http.post('/login', userObj);
+  this.loginUser = userObj => $http.post('/api/users/login', userObj);
 
   this.logoutUser = () => $http.delete('/logout');
 
