@@ -8,27 +8,32 @@ angular.module('MightyShore')
     templateUrl     :    'html/splash.html',
     controller      :    'splashController'
   })
+  .state('home', {
+    url             :    '/home',
+    templateUrl     :    'html/home.html',
+    controller      :    'homeController'
+  })
   .state('register', {
     url             :    '/register',
-    templateUrl     :    'html/register.html',
+    templateUrl     :    'html/sign_in/register.html',
     controller      :    'registerController',
     controllerAs    :    'registerCtrl'
   })
   .state('login', {
     url             :    '/login',
-    templateUrl     :    'html/login.html',
+    templateUrl     :    'html/sign_in/login.html',
     controller      :    'loginController',
     controllerAs    :    'loginCtrl'
   })
   .state('logout', {
     url             :    '/logout',
-    templateUrl     :    'html/logout.html',
+    templateUrl     :    'html/sign_in/logout.html',
     controller      :    'logoutController',
     controllerAs    :    'logoutCtrl'
   })
   .state('forgot', {
     url             :    '/forgot',
-    templateUrl     :    'html/forgot.html',
+    templateUrl     :    'html/sign_in/forgot.html',
     controller      :    'forgotController',
     controllerAs    :    'forgotCtrl'
   })

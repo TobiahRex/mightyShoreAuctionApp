@@ -4,6 +4,9 @@ angular.module('MightyShore')
 .controller('splashController', function($scope, $state){
   console.log('splashCtrl');
 
+  $scope.goToHome = () => {
+    $state.go('home');
+  };
 
 
 });

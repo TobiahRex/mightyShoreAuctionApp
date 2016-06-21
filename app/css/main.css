@@ -1,5 +1,13 @@
-button.btn.btn-lg.btn-primary {
-  margin-left: 50%;
+button.btn.btn-lg {
+  /*margin-left: 50%;*/
+  color: #000000;
+  font-size: 18px;
+}
+
+
+
+hr {
+  border-color: #000;
 }
 
 .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > .navbar-inverse .navbar-nav > .active > a:focus {

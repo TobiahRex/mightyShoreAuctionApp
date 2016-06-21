@@ -1,0 +1,19 @@
+<div class="container-fluid">
+  <div class="form-group">
+    <div class="col-xs-6 col-xs-offset-3">
+      <h3>Please Login</h3>
+      <hr>
+      <div class="text-center">
+
+        <input ng-model='loginObj.Username' type="text" class="form-control" placeholder="Username" >
+        <br>
+        <input ng-model='loginObj._Password' type="password" class="form-control" placeholder="Password">
+        <br>
+        <button ng-click='loginUser(loginObj)' type='submit' class="btn btn-success btn-lg">Login</button>
+        <hr>
+        <a ui-sref="register"> <u>Register</u> <br> <br><a ui-sref="forgot"> <u>Forgot Username or Password</u> </a> </a>
+        
+      </div>
+    </div>
+  </div>
+</div>

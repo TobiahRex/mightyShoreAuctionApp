@@ -1,0 +1,19 @@
+<div class="container-fluid">
+  <div class="form-group">
+    <div class="col-xs-6 col-xs-offset-3">
+      <h3>Registration</h3>
+      <div class="text-center">
+
+        <input ng-model='register.name' type="text" class="form-control" placeholder="Name">
+        <br>
+        <input ng-model='register.password' type="text" class="form-control" placeholder="Password">
+        <br>
+        <input ng-model='register.verifyPwd' type="text" class="form-control" placeholder="Verify Password">
+        <br>
+        <button ng-click='submitRegister(register)'type='submit' class="btn btn-info btn-lg">Register</button>
+        <hr>
+        <a ui-sref="login"> <u>Login</u></a>
+      </div>
+    </div>
+  </div>
+</div>
