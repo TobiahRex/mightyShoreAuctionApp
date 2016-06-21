@@ -1,5 +1,5 @@
 # "Mighty Shore Auction App" - Full Stack M.E.A.N.
-############## *Named after the Heroku url, lols*
+####### *Named after the Heroku url, lols*
 
 ##### STARTED   : *June 17th, 2016*
 ##### COMPLETED :
