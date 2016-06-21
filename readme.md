@@ -9,6 +9,6 @@
   * User Schema Upgrades & Profiles   : Tentatively - 21st, June
   * Item Schema Upgrades              : Tentatively - 21st, June
 
-### Description : *Online Auction App. with UserAuth, OAuth, Chat & C.R.U.D.*
+### Description : *Online Auction App. with UserAuth, OAuth, Chat, Comments, Likes, Dislikes, Watchlist & C.R.U.D.*
 
 ### Hosted on [Heroku](https://mighty-shore-12223.herokuapp.com/#/).
