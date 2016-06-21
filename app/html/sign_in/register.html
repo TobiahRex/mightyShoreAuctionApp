@@ -4,13 +4,15 @@
       <h3>Registration</h3>
       <div class="text-center">
 
-        <input ng-model='register.name' type="text" class="form-control" placeholder="Name">
+        <input ng-model='registerObj.name' type="text" class="form-control" placeholder="Name">
         <br>
-        <input ng-model='register.password' type="text" class="form-control" placeholder="Password">
+        <input ng-model='registerObj.username' type="text" class="form-control" placeholder="Username">
         <br>
-        <input ng-model='register.verifyPwd' type="text" class="form-control" placeholder="Verify Password">
+        <input ng-model='registerObj.password' type="password" class="form-control" placeholder="Password">
         <br>
-        <button ng-click='submitRegister(register)'type='submit' class="btn btn-info btn-lg">Register</button>
+        <input ng-model='registerObj.verifyPwd' type="password" class="form-control" placeholder="Verify Password">
+        <br>
+        <button ng-click='submitNewUser(registerObj)'type='submit' class="btn btn-info btn-lg">Register</button>
         <hr>
         <a ui-sref="login"> <u>Login</u></a>
       </div>

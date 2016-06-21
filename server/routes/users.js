@@ -18,7 +18,7 @@ router.get('/profile', User.loginVerify, (req, res)=>{
 
 router.post('/register', (req, res) => {
   User.register(req.body, err => {
-    res.status(err ? 400 : 200).send({ERROR : err} || {SUCCESS : `User Registered.`});
+    res.status(err ? 400 : 200).send(err || {SUCCESS : `User Registered.`});
   });
 });
 
