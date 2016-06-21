@@ -16,26 +16,22 @@ angular.module('MightyShore')
   .state('register', {
     url             :    '/register',
     templateUrl     :    'html/sign_in/register.html',
-    controller      :    'registerController',
-    controllerAs    :    'registerCtrl'
+    controller      :    'registerController'
   })
   .state('login', {
     url             :    '/login',
     templateUrl     :    'html/sign_in/login.html',
-    controller      :    'loginController',
-    controllerAs    :    'loginCtrl'
+    controller      :    'loginController'
   })
   .state('logout', {
     url             :    '/logout',
     templateUrl     :    'html/sign_in/logout.html',
-    controller      :    'logoutController',
-    controllerAs    :    'logoutCtrl'
+    controller      :    'logoutController'
   })
   .state('forgot', {
     url             :    '/forgot',
     templateUrl     :    'html/sign_in/forgot.html',
-    controller      :    'forgotController',
-    controllerAs    :    'forgotCtrl'
+    controller      :    'forgotController'
   })
   $urlRouterProvider.otherwise('/');
 });

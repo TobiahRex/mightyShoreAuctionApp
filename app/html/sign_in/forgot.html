@@ -6,9 +6,9 @@
       <div class="text-center">
         <input ng-model='user.email' class='form-control' type="text" placeholder="Email">
         <br>
-        <button ng-model='submitForgot(user)' type='submit' class="btn btn-warning btn-lg">Send Email</button>
+        <button ng-click='submitForgot(user)' type='submit' class="btn btn-warning btn-lg">Send Email</button>
         <hr>
-        <a ui-sref="register"> <u>Register</u> <br> <br><a ui-sref="forgot"> <u>Forgot Username or Password</u> </a> </a>
+        <a ui-sref="login"> <u>Login</u> <br> <br><a ui-sref="register"> <u>Register</u> </a> </a>
       </div>
     </div>
   </div>
