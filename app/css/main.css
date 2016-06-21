@@ -1,3 +1,10 @@
 button.btn.btn-lg.btn-primary {
   margin-left: 50%;
 }
+
+.navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > .navbar-inverse .navbar-nav > .active > a:focus {
+  color: #2a9fd6;
+  background-color: transparent;
+  /*font-weight: bold;*/
+  font-size: 18px;
+}
