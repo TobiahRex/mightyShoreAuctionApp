@@ -1,3 +1,29 @@
+body {
+  background-image: url("/css/images/dark-concrete.png");
+}
+
+nav.navbar.navbar-default {
+  box-shadow: 0px 1px 17px rgb(0, 151, 255);
+}
+
+div.auth-jumbo.jumbotron {
+  margin-top: 7%;
+  background-color: rgba(20, 20, 20, 0.68);
+  box-shadow: 0px 4px 97px rgba(0, 151, 255, 1);
+  border-radius: 1%;
+}
+
+.form-horizontal .control-label {
+    text-align: right;
+    margin-bottom: 0;
+    padding-top: 9px;
+    color: white;
+}
+
+div.auth-jumbo.jumbotron > label{
+  color : #d7d7d7;
+}
+
 .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > .navbar-inverse .navbar-nav > .active > a:focus {
   color: #2a9fd6;
   background-color: transparent;
@@ -8,34 +34,33 @@ ul.nav-tabs >  li.profile-cat {
   font-size: 16px;
 }
 
-button.btn.btn-lg {
+button.btn {
   color: #000000;
-  font-size: 18px;
+  font-size: 16px;
 }
-
 
 .signature-nav {
   font-size: 12px;
 }
 
-hr {
-  border-color: #000;
-}
-
 span.new-offer-count, span.new-item-count {
-    background-color: #f50707;
-    border-radius: 50%;
-    padding-left: 6px;
-    padding-right: 6px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    height: 20px;
-    margin-bottom: 10px;
-    font-size: 12px;
-    font-weight: bold;
+  background-color: #f50707;
+  border-radius: 50%;
+  padding-left: 6px;
+  padding-right: 6px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  height: 20px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 
 div.enter-button > button.btn-primary.btn-lg {
-  margin-left: 45%;  
+  margin-left: 45%;
+}
+
+.form-control {
+  background-color: #060606;
 }

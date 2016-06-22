@@ -1,19 +1,32 @@
-<div class="container-fluid">
-  <div class="form-group">
-    <div class="col-xs-6 col-xs-offset-3">
-      <h3>Please Login</h3>
-      <hr>
-      <div class="text-center">
 
-        <input ng-model='loginObj.Username' type="text" class="form-control" placeholder="Username" >
-        <br>
-        <input ng-model='loginObj._Password' type="password" class="form-control" placeholder="Password">
-        <br>
-        <button ng-click='loginUser(loginObj)' type='submit' class="btn btn-success btn-lg">Login</button>
-        <hr>
-        <a ui-sref="register"> <u>Register</u> <br> <br><a ui-sref="forgot"> <u>Forgot Username or Password</u> </a> </a>
-        
+<div class="form-horizontal">
+  <div class="auth-jumbo col-xs-6 col-xs-offset-3 text-center jumbotron vertical-center auth-login">
+
+    <h3>Sign In to Mighty Shore</h3>
+
+    <hr>
+    <br>
+    <div class="text-center">
+      <div class="form-group">
+        <span for="login-username" class="col-xs-2 control-label">Username</span>
+        <div class="col-xs-10">
+          <input ng-model='loginObj.Username' id='#login-username' type="text" class="form-control text-primary" placeholder="Username" >
+        </div>
       </div>
+      <div class="form-group">
+        <span for="login-password" class="col-xs-2 control-label">Password</span>
+        <div class="col-xs-10">
+          <input ng-model='loginObj._Password' id='#login-password' type="password" class="form-control text-primary" placeholder="Password" >
+        </div>
+      </div>
+      <br>
+      <button ng-click='loginUser(loginObj)' type='submit' class="btn btn-success ">Sign In</button>
+      <br>
+      <br>
+      <small ui-sref="forgot"> Forgot Password? </small>
+      <hr>
+      <p ui-sref="registe" class='text-primary'>Need an Account?</p>
     </div>
   </div>
+</div>
 </div>
