@@ -2,28 +2,77 @@
 
 require('dotenv').load();
 const mongoose    = require('mongoose');
-const Item        = require('./item');
 const JWT         = require('jsonwebtoken');
 const BCRYPT      = require('bcryptjs');
 const JWT_SECRET  = process.env.JWT_SECRET;
 const ObjectId    = mongoose.Schema.Types.ObjectId;
 
+const Item        = require('./item');
+const Comment     = require('./comment');
+const Chat        = require('./chat');
 
 let userSchema = new mongoose.Schema({
-  Access  :   {type     : String, enum : ['Administrator', 'Moderator', 'Customer'], required   :   true },
-  Name    :   {first    : {type : String, required : true} , last : {type   : String, required  : true}},
-  Bio     :   {type     : String},
-  Avatar  :   {type     : String},
-  Likes   :   [{type     :   ObjectId, ref   :   'Item'}],
-  Bids    :   [{type     :   ObjectId, ref   :   'Item'}],
-  Items   :   [{type : ObjectId, ref : 'Item'}],
+  Access    :   {
+    type        :   String,
+    enum        :   ['Administrator', 'Moderator', 'Customer'],
+    required    :   true
+  },
+  Username  :   {
+    type        :   String,
+    required    :   true
+  },
+  _Password :   {
+    type        :   String,
+    required    :   true
+  },
+  Name      :   {
+    first     : {
+      type      :   String,
+      required  :   true
+    },
+    last      : {
+      type      :   String,
+      required  :   true
+    }
+  },
+  Email     :   {
+    type      :     'String',
+    required  :     true,
+    unique    :     true
+  },
+  Bio       :   {
+    type        :     String
+  },
+  Avatar    :   {
+    type        :     String
+  },
+  Likes     :   [{  // auctions user has liked
+    type        :   ObjectId,
+    ref         :   'Item'
+  }],
+  Bids      :   [{  // bids user has made
+    type        :   ObjectId,
+    ref         :   'Item'
+  }],
+  Items     :   [{  // items user has posted for auction
+    type        :   ObjectId,
+    ref         :   'Item'
+  }],
+  Comments  :   [{  // comments user has posted @ auctions
+    type        :   ObjectId,
+    ref         :   'Comments'
+  }],
   // Social Data
-  Username  :   {type   :   String, required  :   true},
-  _Password  :   {type   :   String, required   :   true},
-  Social    :   {facebook : String, twitter : String, instagram : String },
-
+  Social    :   {   // OAuth user ID's
+    facebook    :   String,
+    twitter     :   String,
+    instagram   :   String
+  }
   // Chat Data
-
+  ChatMsgs  :   {
+    type        :     ObjectId,
+    ref         :     'Comment'
+  }
 });
 
 // CRUD Below
