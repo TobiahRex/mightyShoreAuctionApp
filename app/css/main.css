@@ -1,21 +1,41 @@
+.navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > .navbar-inverse .navbar-nav > .active > a:focus {
+  color: #2a9fd6;
+  background-color: transparent;
+  font-size: 18px;
+}
+ul.nav-tabs >  li.profile-cat {
+  margin-right: 30px;
+  font-size: 16px;
+}
+
 button.btn.btn-lg {
-  /*margin-left: 50%;*/
   color: #000000;
   font-size: 18px;
 }
+
 
 .signature-nav {
   font-size: 12px;
 }
 
-
 hr {
   border-color: #000;
 }
 
-.navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > .navbar-inverse .navbar-nav > .active > a:focus {
-  color: #2a9fd6;
-  background-color: transparent;
-  /*font-weight: bold;*/
-  font-size: 18px;
+span.new-offer-count, span.new-item-count {
+    background-color: #f50707;
+    border-radius: 50%;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    height: 20px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+
+div.enter-button > button.btn-primary.btn-lg {
+  margin-left: 45%;  
 }

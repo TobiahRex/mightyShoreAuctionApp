@@ -14,6 +14,7 @@ router.route('/')
 });
 
 router.get('/profile', User.loginVerify, (req, res)=>{
+  console.log(req.user);
   res.send(req.user);
 });
 
@@ -33,7 +34,7 @@ router.route('/login')
 .post((req, res)=> {
   User.authenticate(req.body, (err, tokenPkg ) => {
     err ? res.status(400).send(err) :
-    res.cookie('accessToken', tokenPkg.token).status(200).send({SUCCESS : `User is logged in @ Cookie: ${res.cookie.accessToken}`});
+    res.cookie('accessToken', tokenPkg.token).status(200).send('User is logged in.');
   });
 })
 .delete((req, res)=> {

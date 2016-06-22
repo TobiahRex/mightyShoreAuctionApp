@@ -131,7 +131,6 @@ userSchema.statics.register = function(newUserObj, cb){
       Bio       :   newUserObj.Bio,
       Avatar    :   newUserObj.Avatar
     });
-    console.log('user: ', user);
     user.save((err, savedUser)=> {
       if(err) return cb(err);
 
@@ -182,13 +181,11 @@ userSchema.statics.emailVerify = (token, cb) => {
 
   JWT.verify(token, JWT_SECRET, (err, payload)=> {
     if(err) return res.status(400).send(err);
-    console.log(payload._id);
     // if(payload.exp < Date.now()) return cb({ERROR : `Verification link expired on ${Date(payload.exp)}`});
 
     User.findById(payload._id, (err, dbUser)=> {
       if(err || !dbUser) return cb(err || 'User not found');
       dbUser.Verified = true;
-      console.log('verified user found: ',dbUser);
       dbUser.save(cb);
     });
   });

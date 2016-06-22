@@ -20,8 +20,7 @@ angular.module('MightyShore')
   })
   .state('verify', {
     url             :    '/verify',
-    templateUrl     :    'html/sign_in/verify.html',
-    controller      :    'verifyController'
+    templateUrl     :    'html/sign_in/verify.html'
   })
   .state('login', {
     url             :    '/login',
@@ -36,6 +35,20 @@ angular.module('MightyShore')
     url             :    '/forgot',
     templateUrl     :    'html/sign_in/forgot.html',
     controller      :    'forgotController'
+  })
+  .state('profile', {
+    url             :     '/profile',
+    templateUrl     :     'html/profile.html',
+    controller      :     'profileController',
+    resolve         :     {
+      profile   :     function(Auth, $q, $state){
+        return Auth.getProfile()
+        .catch(()=>{
+          $state.go('login');
+          return $q.reject();
+        });
+      }
+    }
   })
   $urlRouterProvider.otherwise('/');
 });

@@ -7,17 +7,8 @@ angular.module('MightyShore')
   $scope.loginUser = loginObj => {
     Auth.loginUser(loginObj)
     .then(dataObj =>{
-      if(!dataObj.data.SUCCESS) return console.log('login failed.', dataObj.data);
-      console.log('login Successful: ', dataObj);
-      $state.go('home');
+      if(dataObj.status !== 200) return console.log('login failed.', dataObj.data);
+      $state.go('profile');
     });
   };
-  // Auth.getProfile()
-  // .done(profile => {
-  //   if(!profile.Username){
-  //     /* Sweet Alert Error  */
-  //     $state.go('/profile')  // use NG resolve to retrieve profile with ngRoute
-  //   }
-  //
-  // });
 });
