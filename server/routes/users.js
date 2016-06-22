@@ -24,8 +24,8 @@ router.post('/register', (req, res) => {
 
 router.route('/login')
 .post((req, res)=> {
-  User.authenticate(req.body, (err, tokenPkg ) => {
-    if(err) res.status(400).send({ERROR : `${err}`});
+  User.authenticate(req.body, (err, tokenPkg ) => {  
+    err ? res.status(400).send(err) :
     res.cookie('accessToken', tokenPkg.token).status(200).send({SUCCESS : `User is logged in @ Cookie: ${res.cookie.accessToken}`});
   });
 })

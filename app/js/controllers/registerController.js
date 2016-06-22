@@ -2,7 +2,7 @@
 
 angular.module('MightyShore')
 .controller('registerController', function($scope, $state, Auth){
-  console.log('registerController');
+  console.log('registerCtrl');
 
   let userObj = {
     Access      :  'Administrator',
@@ -14,25 +14,23 @@ angular.module('MightyShore')
     _Password   :   ''
   };
 
-  $scope.submitNewUser = registerObj => {
-    console.log(registerObj);
-    if(registerObj.password !== registerObj.verifyPwd) return console.log('ERROR: Passwords do not match.');
+  $scope.registerNewUser = registerObj => {
+    //-pwd match
+    if(registerObj.password !== registerObj._Password) return console.log('ERROR: Passwords do not match.');
 
-    userObj.Username  = registerObj.username;
-    userObj._Password = registerObj.verifyPwd;
-
+    //-build userObj from registerObj
+    userObj.Username  = registerObj.Username;
+    userObj._Password = registerObj._Password;
     registerObj.name.split(' ').forEach((name, i) => {
       i === 0 ? userObj.Name.first = name :
       i === 1 ? userObj.Name.last = name :
       null;
     });
 
+    //-submit
     Auth.registerUser(userObj)
     .then(dataObj => {
-      console.log('user registered', dataObj.data);
       $state.go('home');
     });
   };
-
-
 });
