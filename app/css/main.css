@@ -2,15 +2,29 @@ body {
   background-image: url("/css/images/dark-concrete.png");
 }
 
+.navbar-default .navbar-nav > .active > a {
+    color: #2a9fd6;
+    background-color: transparent;
+    font-size: 18px;
+}
+
+
+ul.nav-tabs >  li.profile-cat {
+  margin-right: 30px;
+  font-size: 16px;
+}
 nav.navbar.navbar-default {
   box-shadow: 0px 1px 17px rgb(0, 151, 255);
 }
 
 div.auth-jumbo.jumbotron {
   margin-top: 7%;
-  background-color: rgba(20, 20, 20, 0.68);
+  background-color: rgba(20, 20, 20);
   box-shadow: 0px 4px 97px rgba(0, 151, 255, 1);
   border-radius: 1%;
+}
+div.auth-jumbo.jumbotron > label{
+  color : #d7d7d7;
 }
 
 .form-horizontal .control-label {
@@ -20,21 +34,7 @@ div.auth-jumbo.jumbotron {
     color: white;
 }
 
-div.auth-jumbo.jumbotron > label{
-  color : #d7d7d7;
-}
-
-.navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > .navbar-inverse .navbar-nav > .active > a:focus {
-  color: #2a9fd6;
-  background-color: transparent;
-  font-size: 18px;
-}
-ul.nav-tabs >  li.profile-cat {
-  margin-right: 30px;
-  font-size: 16px;
-}
-
-button.btn {
+button.btn, .btn-warning {
   color: #000000;
   font-size: 16px;
 }
@@ -63,4 +63,5 @@ div.enter-button > button.btn-primary.btn-lg {
 
 .form-control {
   background-color: #060606;
+  font-size: 18px;
 }

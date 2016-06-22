@@ -1,18 +1,19 @@
 <div class="container-fluid">
   <div class="form-group">
-    <div class="col-xs-6 col-xs-offset-3">
-      <h3>Registration</h3>
+    <div class="register-jumbo col-xs-6 col-xs-offset-3 text-center jumbotron">
+      <h3>Sign Up for Mighty Shore</h3>
+      <hr>
       <div class="text-center">
         <form ng-submit="registerNewUser(registerObj)">
-          <input ng-model='registerObj.name' type="text" class="form-control" placeholder="Name">
+          <input ng-model='registerObj.name' type="text" class="form-control" placeholder="Name" required>
           <br>
-          <input ng-model='registerObj.Email' type="text" class="form-control" placeholder="Email">
+          <input ng-model='registerObj.Email' type="text" class="form-control" placeholder="Email" required>
           <br>
-          <input ng-model='registerObj.Username' type="text" class="form-control" placeholder="Username">
+          <input ng-model='registerObj.Username' type="text" class="form-control" placeholder="Username" required>
           <br>
-          <input ng-model='registerObj.password' type="password" class="form-control" placeholder="Password">
+          <input ng-model='registerObj.password' type="password" class="form-control" placeholder="Password" required>
           <br>
-          <input ng-model='registerObj._Password' type="password" class="form-control" placeholder="Verify Password">
+          <input ng-model='registerObj._Password' type="password" class="form-control" placeholder="Verify Password" required>
           <br>
           <input ng-model='registerObj.Avatar' type="text" class="form-control " placeholder="Avatar URL">
           <br>
