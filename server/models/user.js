@@ -2,11 +2,13 @@
 
 require('dotenv').load();
 const mongoose    = require('mongoose');
+const moment      = require('moment');
 const JWT         = require('jsonwebtoken');
 const BCRYPT      = require('bcryptjs');
 const JWT_SECRET  = process.env.JWT_SECRET;
 const ObjectId    = mongoose.Schema.Types.ObjectId;
 
+const Mail        = require('./mail');
 const Item        = require('./item');
 const Comment     = require('./comment');
 const Chat        = require('./chat');
@@ -14,7 +16,7 @@ const Chat        = require('./chat');
 let userSchema = new mongoose.Schema({
   Access    :   {
     type        :   String,
-    enum        :   ['Administrator', 'Moderator', 'Customer'],
+    enum        :   ['Administrator', 'Moderator', 'Customer', 'Not-Assigned'],
     required    :   true
   },
   Username  :   {
@@ -40,13 +42,25 @@ let userSchema = new mongoose.Schema({
     required  :     true,
     unique    :     true
   },
+  Verified  :   {
+    type      :     Boolean,
+    default   :     false
+  },
   Bio       :   {
     type        :     String
   },
   Avatar    :   {
     type        :     String
   },
-  Likes     :   [{  // auctions user has liked
+  ChatMsgs  :   [{  // chat messages user has written
+    type        :     ObjectId,
+    ref         :     'Chat'
+  }],
+  Comments  :   [{  // comments user has posted @ auctions
+    type        :   ObjectId,
+    ref         :   'Comments'
+  }],
+  Items     :   [{  // items user has posted for auction
     type        :   ObjectId,
     ref         :   'Item'
   }],
@@ -54,38 +68,28 @@ let userSchema = new mongoose.Schema({
     type        :   ObjectId,
     ref         :   'Item'
   }],
-  Items     :   [{  // items user has posted for auction
+  Likes     :   [{  // auctions user has liked
     type        :   ObjectId,
     ref         :   'Item'
   }],
-  Comments  :   [{  // comments user has posted @ auctions
-    type        :   ObjectId,
-    ref         :   'Comments'
-  }],
-  // Social Data
   Social    :   {   // OAuth user ID's
-    facebook    :   String,
-    twitter     :   String,
-    instagram   :   String
-  }
-  // Chat Data
-  ChatMsgs  :   {
-    type        :     ObjectId,
-    ref         :     'Comment'
-  }
+  facebook    :   String,
+  twitter     :   String,
+  instagram   :   String
+}
 });
 
 // CRUD Below
 
-userSchema.statics.newUser = (userObj, cb) => {
-  if(!userObj) return cb({ERROR : `Did Not Provide User Information.`});
-  User.create(userObj, err => {
-    err ? cb(err) :
-    User.find({}, (err, dbUsers)=> {
-      err ? cb(err) : cb(null, dbUsers);
-    });
-  });
-};
+// userSchema.statics.newUser = (userObj, cb) => {
+//   if(!userObj) return cb({ERROR : `Did Not Provide User Information.`});
+//   User.create(userObj, err => {
+//     err ? cb(err) :
+//     User.find({}, (err, dbUsers)=> {
+//       err ? cb(err) : cb(null, dbUsers);
+//     });
+//   });
+// };
 
 userSchema.statics.getUser = (userId, cb) => {
   if(!userId) return cb({ERROR : `Did Not Provide ID; ${userId}`});
@@ -113,10 +117,36 @@ userSchema.statics.removeUser = (userId, cb) => {
 // Auth MiddleWare
 
 userSchema.statics.register = function(newUserObj, cb){
-  BCRYPT.hash(newUserObj._Password, 10, (err, hash)=> {
+  console.log(newUserObj);
+  User.findOne({Email : newUserObj.Email}, (err, dbUser)=>{
+    if(err || dbUser) return cb(err || {ERROR : `That Email has already been taken.`});
+  });
+  BCRYPT.hash(newUserObj._Password, 12, (err, hash)=> {
     if(err) cb(err);
-    newUserObj._Password = hash;
-    this.newUser(newUserObj, cb);
+
+    let user = new User({
+      Access    :   newUserObj.Access,
+      Username  :   newUserObj.Username,
+      Name      :   {
+        first     :  newUserObj['Name.first'],
+        last      :  newUserObj['Name.last']
+      },
+      Email     :   newUserObj.Email,
+      _Password :   hash,
+      Bio       :   newUserObj.Bio,
+      Avatar    :   newUserObj.Avatar
+    });
+
+    user.save((err, savedUser)=> {
+      if(err) return cb(err);
+
+      Mail.verify(savedUser, response =>{
+
+        if(response.statusCode !== 202) return cb(err);
+        savedUser._Password = null;
+        cb(err, savedUser);
+      });
+    });
   });
 };
 
@@ -126,9 +156,8 @@ userSchema.statics.authenticate = (userObj, cb) => {
     BCRYPT.compare(userObj._Password, dbUser._Password, (err, result)=> {
       if(err || result !== true) return cb({ERROR : 'Login Failed. Username or Password Incorrect. Try Again.'});
     });
-
     let token = dbUser.createToken();
-    // dbUser._Password = null;
+    dbUser._Password = null;
     cb(null, {token, dbUser});
   });
 };
@@ -153,11 +182,40 @@ userSchema.statics.loginVerify = function(req, res, next){
   });
 };
 
+userSchema.statics.emailVerify = (token, cb) => {
+  if(!token) return cb({ERROR : 'Token not recieved.'});
+
+  JWT.verify(token, JWT_SECRET, (err, payload)=> {
+    if(err) return res.status(400).send(err);
+
+    // if(payload.exp < Date.now()) return cb({ERROR : `Verification link expired on ${Date(payload.exp)}`});
+
+    User.findById(payload._id, (err, dbUser)=> {
+      console.log('err: ', err, '\ndbUser: ', dbUser);
+      if(err || !dbUser) return cb(err || 'User not found');
+      dbUser.Verified = true;
+      console.log('verified user found: ',dbUser);
+      dbUser.save(cb);
+    });
+  });
+};
+
 userSchema.methods.createToken = function(){
   let thisId = this._id;
   let token = JWT.sign({_id : this._id}, JWT_SECRET);
   return token;
 };
 
-let User = mongoose.model('User', userSchema);
+userSchema.methods.profileLink = function(){
+  let exp = moment().add(1, 'w');
+  let payload = {
+    _id :   this._id,
+    exp :   moment().add(1, 'w').unix()
+  };
+
+  let token = JWT.sign(payload, JWT_SECRET);
+  return `http://localhost:3000/api/users/verify/${token}`;
+};
+
+var User = mongoose.model('User', userSchema);
 module.exports = User;

@@ -11,7 +11,8 @@ angular.module('MightyShore')
       last  : ''
     },
     Username    :   '',
-    _Password   :   ''
+    _Password   :   '',
+    Email       :   ''
   };
 
   $scope.registerNewUser = registerObj => {

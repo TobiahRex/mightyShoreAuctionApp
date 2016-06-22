@@ -15,7 +15,7 @@ let commentSchema = new mongoose.Schema({
     type      :     ObjectId,
     ref       :     'User',
     required  :     true
-  }
+  },
   Item_id   :     {
     type      :     ObjectId,
     ref       :     'Item',
