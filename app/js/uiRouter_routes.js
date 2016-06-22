@@ -18,6 +18,11 @@ angular.module('MightyShore')
     templateUrl     :    'html/sign_in/register.html',
     controller      :    'registerController'
   })
+  .state('verify', {
+    url             :    '/verify',
+    templateUrl     :    'html/sign_in/verify.html',
+    controller      :    'verifyController'
+  })
   .state('login', {
     url             :    '/login',
     templateUrl     :    'html/sign_in/login.html',

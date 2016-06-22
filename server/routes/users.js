@@ -19,16 +19,14 @@ router.get('/profile', User.loginVerify, (req, res)=>{
 
 router.get('/verify/:token', (req, res)=>{
   User.emailVerify(req.params.token, (err, dbUser, result) => {
-    console.log('err: ', err, '\ndbUser: ', dbUser, '\nresult: ', result);
+    // console.log('err: ', err, '\ndbUser: ', dbUser, '\nresult: ', result);
     if(err) res.status(400).send(err);
     res.redirect('/#/login');
   });
 });
 
 router.post('/register', (req, res) => {
-  User.register(req.body, (err, dbUser) => {
-    res.status(err ? 400 : 200).send(err || dbUser);
-  });
+  User.register(req.body, res.handle);
 });
 
 router.route('/login')

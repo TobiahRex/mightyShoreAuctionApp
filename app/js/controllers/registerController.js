@@ -5,14 +5,14 @@ angular.module('MightyShore')
   console.log('registerCtrl');
 
   let userObj = {
-    Access      :  'Administrator',
-    Name        : {
-      first : '',
-      last  : ''
-    },
+    Access      :  'Not-Assigned',
     Username    :   '',
     _Password   :   '',
-    Email       :   ''
+    Firstname   :   '',
+    Lastname    :   '',
+    Email       :   '',
+    Bio         :   '',
+    Avatar      :   ''
   };
 
   $scope.registerNewUser = registerObj => {
@@ -22,16 +22,21 @@ angular.module('MightyShore')
     //-build userObj from registerObj
     userObj.Username  = registerObj.Username;
     userObj._Password = registerObj._Password;
+    userObj.Email     = registerObj.Email;
+    userObj.Bio       = registerObj.Bio;
+    userObj.Avatar    = registerObj.Avatar || registerObj.AvatarFile;
+
     registerObj.name.split(' ').forEach((name, i) => {
-      i === 0 ? userObj.Name.first = name :
-      i === 1 ? userObj.Name.last = name :
+      i === 0 ? userObj.Firstname = name :
+      i === 1 ? userObj.Lastname = name :
       null;
     });
 
     //-submit
+    console.log('userObj: ', userObj);
     Auth.registerUser(userObj)
     .then(dataObj => {
-      $state.go('home');
+      $state.go('verify');
     });
   };
 });

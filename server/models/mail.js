@@ -9,7 +9,7 @@ let Mail = {
     let to_email = new helper.Email(`${savedUser.Email}`);
     let subject = "Registration Confirmation for Mighty Shore Auctions";
     let content = new helper.Content("text/html", `<html>
-    <h1>Hi, ${savedUser.Name.first}</h1>
+    <h1>Hi, ${savedUser.Firstname}</h1>
     <br>
     <p>
     Please verify your new account by clicking <a href="${savedUser.profileLink()}">HERE</a>

@@ -27,17 +27,15 @@ let userSchema = new mongoose.Schema({
     type        :   String,
     required    :   true
   },
-  Name      :   {
-    first     : {
+  Firstname     :   {
       type      :   String,
       required  :   true
-    },
-    last      : {
-      type      :   String,
-      required  :   true
-    }
   },
-  Email     :   {
+  Lastname      :   {
+      type      :   String,
+      required  :   true
+  },
+  Email         :   {
     type      :     'String',
     required  :     true,
     unique    :     true
@@ -117,7 +115,6 @@ userSchema.statics.removeUser = (userId, cb) => {
 // Auth MiddleWare
 
 userSchema.statics.register = function(newUserObj, cb){
-  console.log(newUserObj);
   User.findOne({Email : newUserObj.Email}, (err, dbUser)=>{
     if(err || dbUser) return cb(err || {ERROR : `That Email has already been taken.`});
   });
@@ -127,16 +124,14 @@ userSchema.statics.register = function(newUserObj, cb){
     let user = new User({
       Access    :   newUserObj.Access,
       Username  :   newUserObj.Username,
-      Name      :   {
-        first     :  newUserObj['Name.first'],
-        last      :  newUserObj['Name.last']
-      },
+      Firstname :   newUserObj.Firstname,
+      Lastname  :   newUserObj.Lastname,
       Email     :   newUserObj.Email,
       _Password :   hash,
       Bio       :   newUserObj.Bio,
       Avatar    :   newUserObj.Avatar
     });
-
+    console.log('user: ', user);
     user.save((err, savedUser)=> {
       if(err) return cb(err);
 
@@ -187,11 +182,10 @@ userSchema.statics.emailVerify = (token, cb) => {
 
   JWT.verify(token, JWT_SECRET, (err, payload)=> {
     if(err) return res.status(400).send(err);
-
+    console.log(payload._id);
     // if(payload.exp < Date.now()) return cb({ERROR : `Verification link expired on ${Date(payload.exp)}`});
 
     User.findById(payload._id, (err, dbUser)=> {
-      console.log('err: ', err, '\ndbUser: ', dbUser);
       if(err || !dbUser) return cb(err || 'User not found');
       dbUser.Verified = true;
       console.log('verified user found: ',dbUser);
