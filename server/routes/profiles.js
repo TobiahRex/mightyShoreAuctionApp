@@ -11,8 +11,8 @@ router.route('/:id/new_items')
   User.findById(req.params.id, (err, dbUser)=> {
     if(err) res.status(400).send(err);
     Profile.getNewItems(dbuser, res.handle);
-    });
-  })
+  });
+})
 })
 .post((req, res) => {
   Profile.saveResponse(req.body, res.handle);
@@ -30,12 +30,26 @@ router.route('/:id/offers')
   User.findById(req.params.id, (err, dbUser)=> {
     err ? res.status(400).send(err) :
 
-    // Get User.Items
-    // Get User.LastLogin
-    // -----------------------Create a Method
-    // Filter Items since last login =>
-    //
-    // Items.forEach(item => lastLogin < item.Created ? item : null ); // ish
+    // Get Items belonging to User
+    Item.find({Owner : dbUser._id}, (err, userOffers)=> {
+      if(err) res.status(400).send(err);
+
+      let recentBids = comments = {};
+
+      // Filter Items since last login for NEW bids
+      let recentBids = userOffers.map(offer => return offer.Bids.map(bid =>
+        return bid.BidDate > dbUser.LastLogin ? bid : null;
+      );
+    );
+
+    userOffers.forEach(offer => {
+      offer.Comments.map(comment => {
+        comment.Userid
+      })
+    });
+
+    [ Offer [Comments [replies, [likes]], [likes]] ]
+
     // -----------------------
     // Get Users from Comments & Reply ID's.
     // - Send Array of User Id
@@ -46,8 +60,8 @@ router.route('/:id/offers')
     // let offerObj = {
     //  Offers : [ [Item , [Comments, [Replies] ] ]  ]
     // }
-
-  })
+  });
+});
 })
 .post((req, res)=> {
   // Saving new Replies or Comments (api post @ click)
@@ -84,6 +98,8 @@ router.route('/:id/offers')
     );
   });
 });
+
+
 
 router.get('/:id/get_pending', (req, res)=> {
   User.findById(req.params.id, (err, dbUser)=> {
