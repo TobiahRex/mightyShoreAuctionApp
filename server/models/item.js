@@ -6,18 +6,82 @@ const moment   = require('moment');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 let itemSchema = new mongoose.Schema({
-  Status      :   {type   :   String, enum :  ['Active', 'Expired', 'Sold']},
-  Added       :   {type   :   Date}, //db data
-  SortDate    :   {type   :   Date}, //db data
-  Name        :   {type   :   String},
-  Condition   :   {type   :   String},
-  Quantity    :   {type   :   String},
-  Price       :   {type   :   Number},
-  Likes       :   {type   :   Number},
-  Likers      :   [{type   :   ObjectId, ref   :   'User'}],
-  Bids        :   {type   :   Number},
-  Bidders     :   [{type    :   ObjectId, ref   :   'User'}],
-  Owner       :   {type   :   ObjectId, ref   :   'User', required  :   true },
+  Owner       :   {
+    type        :   ObjectId,
+    ref         :   'User',
+    required    :   true
+  },
+  Status      :   {
+    type        :   String,
+    enum        :   ['Active', 'Expired', 'Sold'],
+    required    :   true
+  },
+  RenderDate  :   {
+    type        :     Date
+  },
+  DataDate    :   {
+    type        :     Date
+  },
+  Title       :   {
+    type        :   String,
+    required    :   true
+  },
+  Description :   {
+    type        :     String,
+    required    :     true
+  },
+  Condition   :   {
+    type   :   String
+  },
+  Quantity    :   {
+    type   :   Number
+  },
+  Price       :   {
+    type   :   Number
+  },
+  Likers      :   [{
+    type        :   ObjectId,
+    ref         :   'User'
+  }],
+  Bids        :   [{
+    UserId    :   {
+      type        :   ObjectId,
+      ref         :   'User'
+    },
+    Amount     :   {
+      type        :     Number
+    },
+    BidDate    :   {
+      type        :     Date
+    }
+  }],
+  Comments    :   [{
+    UserId      :   {
+      type      :     ObjectId,
+      ref       :     'User'
+    },
+    CommentDate :   {
+      type      :     Date
+    },
+    Time        :   {
+      type      :     Date
+    },
+    Body        :   {
+      type      :    String
+    },
+    Replies     :   [{
+      UserId      :   {
+        type      :   ObjectId,
+        ref       :   'User'
+      },
+      Body        :   {
+        type      :   String
+      },
+      ReplyDate   :   {
+        type      :   Date
+      }
+    }]
+  }]
 })
 
 itemSchema.statics.newItem = (itemObj, cb) => {

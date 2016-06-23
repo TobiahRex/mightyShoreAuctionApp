@@ -30,9 +30,11 @@
   <script src="/js/controllers/logoutController.js"></script>
   <script src="/js/controllers/forgotController.js"></script>
   <script src="/js/controllers/profileController.js"></script>
+  <script src="/js/controllers/newItemController.js"></script>
 
   <!-- SERVICES -->
   <script src="/js/services/authServices.js"></script>
+  <script src="/js/services/itemsServices.js"></script>
 
 
   <title>
@@ -60,7 +62,7 @@
       <div class="collapse navbar-collapse" id='collapse-nav'>
         <ul class="nav navbar-nav navbar-right">
           <!-- if logged in -->
-          <li class="active"><a ng-show='currentUser' ui-sref='login'>Profile</a></li>
+          <li class="active"><a ng-show='currentUser' ui-sref='profile'>Profile</a></li>
           <li class="active"><a ng-show='currentUser' ui-sref='logout'>Logout</a></li>
           <!-- if NOT logged in -->
           <li class="active"><a ng-hide='currentUser' ui-sref='login'>Login</a></li>

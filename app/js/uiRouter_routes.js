@@ -11,7 +11,16 @@ angular.module('MightyShore')
   .state('home', {
     url             :    '/home',
     templateUrl     :    'html/home.html',
-    controller      :    'homeController'
+    controller      :    'homeController',
+    resolve         :    {
+      allItems   :  function(Items, $q, $state){
+        return Items.getAll()
+        .catch(err => {
+          $scope.allItems = err;
+          return $q.reject();
+        });
+      }
+    }
   })
   .state('register', {
     url             :    '/register',
@@ -57,6 +66,7 @@ angular.module('MightyShore')
         });
       }
     }
-  })
+  });
+
   $urlRouterProvider.otherwise('/');
 });
