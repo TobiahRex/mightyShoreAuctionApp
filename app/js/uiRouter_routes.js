@@ -58,7 +58,7 @@ angular.module('MightyShore')
     templateUrl     :     'html/profile.html',
     controller      :     'profileController',
     resolve         :     {
-      profile   :     function(Auth, $q, $state){
+      dbProfile   :     function(Auth, $q, $state){
         return Auth.getProfile()
         .catch(()=>{
           $state.go('login');

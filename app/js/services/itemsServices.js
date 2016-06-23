@@ -3,7 +3,6 @@
 angular.module('MightyShore')
 .service('Items', function($http){
 
-
 // CRUD
 
   this.getAll = () => $http.get('/api/items');
@@ -15,12 +14,5 @@ angular.module('MightyShore')
   this.editItem = itemObj => $http.put(`/api/items/${itemObj.id}`, itemObj);
 
   this.deleteItem = itemId => $http.delete(`/api/items/${itemId}`);
-
-// QUERIES
-
-  
-
-
-
 
 });

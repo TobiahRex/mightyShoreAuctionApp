@@ -71,10 +71,19 @@ let userSchema = new mongoose.Schema({
     ref         :   'Item'
   }],
   Social    :   {   // OAuth user ID's
-  facebook    :   String,
-  twitter     :   String,
-  instagram   :   String
-}
+    facebook    :   {
+      type        :     String
+    },
+    twitter     :   {
+      type        :     String
+    },
+    instagram   :   {
+      type        :     String
+    }
+  },
+  LastLogin   :   {
+    type        :     Date
+  }
 });
 
 // CRUD
@@ -165,8 +174,12 @@ userSchema.statics.authenticate = (userObj, cb) => {
       if(err || result !== true) return cb({ERROR : 'Login Failed. Username or Password Incorrect. Try Again.'});
     });
     let token = dbUser.createToken();
-    dbUser._Password = null;
-    cb(null, {token, dbUser});
+    dbUser.LastLogin = Date.now();
+    dbUser.save((err, savedUser)=> {
+      if(err) return cb(err);
+      savedUser._Password = null;
+      cb(null, {token, savedUser});
+    });
   });
 };
 

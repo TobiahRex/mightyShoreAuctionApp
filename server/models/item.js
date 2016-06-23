@@ -19,7 +19,7 @@ let itemSchema = new mongoose.Schema({
   RenderDate  :   {
     type        :     Date
   },
-  DataDate    :   {
+  Created     :   {
     type        :     Date
   },
   Title       :   {
@@ -48,7 +48,7 @@ let itemSchema = new mongoose.Schema({
       type        :   ObjectId,
       ref         :   'User'
     },
-    Amount     :   {
+    Ammount     :   {
       type        :     Number
     },
     BidDate    :   {
@@ -56,6 +56,9 @@ let itemSchema = new mongoose.Schema({
     }
   }],
   Comments    :   [{
+    CommentId   :   {  // uuid
+      type      :   String
+    },
     UserId      :   {
       type      :     ObjectId,
       ref       :     'User'
@@ -70,6 +73,9 @@ let itemSchema = new mongoose.Schema({
       type      :    String
     },
     Replies     :   [{
+      ReplyId     :   { // uuid
+        type      :   String
+      },
       UserId      :   {
         type      :   ObjectId,
         ref       :   'User'
@@ -80,7 +86,22 @@ let itemSchema = new mongoose.Schema({
       ReplyDate   :   {
         type      :   Date
       }
+    }],
+    Likes       :   [{
+      LikeId      :   { //uuid
+        type      :     String
+      },
+      UserId      :   {
+        type      :   ObjectId,
+        ref       :   'User'
+      }
     }]
+  }],
+  Categories  :   [{
+    type      :   String
+  }],
+  Tags        :   [{
+    type      :   String
   }]
 })
 
