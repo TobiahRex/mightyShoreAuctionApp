@@ -77,18 +77,7 @@ let userSchema = new mongoose.Schema({
 }
 });
 
-// CRUD Below
-
-// userSchema.statics.newUser = (userObj, cb) => {
-//   if(!userObj) return cb({ERROR : `Did Not Provide User Information.`});
-//   User.create(userObj, err => {
-//     err ? cb(err) :
-//     User.find({}, (err, dbUsers)=> {
-//       err ? cb(err) : cb(null, dbUsers);
-//     });
-//   });
-// };
-
+// CRUD
 userSchema.statics.getUser = (userId, cb) => {
   if(!userId) return cb({ERROR : `Did Not Provide ID; ${userId}`});
   User.findById(userId, (err, dbUser) => {
@@ -112,8 +101,7 @@ userSchema.statics.removeUser = (userId, cb) => {
   });
 };
 
-// Auth MiddleWare
-
+// New User Methods
 userSchema.statics.register = function(newUserObj, cb){
   User.findOne({Email : newUserObj.Email}, (err, dbUser)=>{
     if(err || dbUser) return cb(err || {ERROR : `That Email has already been taken.`});
@@ -144,6 +132,32 @@ userSchema.statics.register = function(newUserObj, cb){
   });
 };
 
+userSchema.methods.profileLink = function(){
+  let exp = moment().add(1, 'w');
+  let payload = {
+    _id :   this._id,
+    exp :   moment().add(1, 'w').unix()
+  };
+
+  let token = JWT.sign(payload, JWT_SECRET);
+  return `http://localhost:3000/api/users/verify/${token}`;
+};
+
+userSchema.statics.emailVerify = (token, cb) => {
+  if(!token) return cb({ERROR : 'Token not recieved.'});
+
+  JWT.verify(token, JWT_SECRET, (err, payload)=> {
+    if(err) return res.status(400).send(err);
+    // if(payload.exp < Date.now()) return cb({ERROR : `Verification link expired on ${Date(payload.exp)}`});
+
+    User.findById(payload._id, (err, dbUser)=> {
+      if(err || !dbUser) return cb(err || 'User not found');
+      dbUser.Verified = true;
+      dbUser.save(cb);
+    });
+  });
+};
+// Auth MiddleWare
 userSchema.statics.authenticate = (userObj, cb) => {
   User.findOne({Username  :   userObj.Username}, (err, dbUser) => {
     if(err || !dbUser) return cb(err || {ERROR : `Login Failed. Username or Password Inccorect. Try Again.`});
@@ -156,7 +170,6 @@ userSchema.statics.authenticate = (userObj, cb) => {
   });
 };
 
-// Auth MiddleWare - Route Access Verification
 userSchema.statics.loginVerify = function(req, res, next){
   let token = req.cookies.accessToken;
   JWT.verify(token, JWT_SECRET, (err, payload) => {
@@ -176,36 +189,10 @@ userSchema.statics.loginVerify = function(req, res, next){
   });
 };
 
-userSchema.statics.emailVerify = (token, cb) => {
-  if(!token) return cb({ERROR : 'Token not recieved.'});
-
-  JWT.verify(token, JWT_SECRET, (err, payload)=> {
-    if(err) return res.status(400).send(err);
-    // if(payload.exp < Date.now()) return cb({ERROR : `Verification link expired on ${Date(payload.exp)}`});
-
-    User.findById(payload._id, (err, dbUser)=> {
-      if(err || !dbUser) return cb(err || 'User not found');
-      dbUser.Verified = true;
-      dbUser.save(cb);
-    });
-  });
-};
-
 userSchema.methods.createToken = function(){
   let thisId = this._id;
   let token = JWT.sign({_id : this._id}, JWT_SECRET);
   return token;
-};
-
-userSchema.methods.profileLink = function(){
-  let exp = moment().add(1, 'w');
-  let payload = {
-    _id :   this._id,
-    exp :   moment().add(1, 'w').unix()
-  };
-
-  let token = JWT.sign(payload, JWT_SECRET);
-  return `http://localhost:3000/api/users/verify/${token}`;
 };
 
 var User = mongoose.model('User', userSchema);

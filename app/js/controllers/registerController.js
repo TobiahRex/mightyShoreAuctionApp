@@ -36,7 +36,12 @@ angular.module('MightyShore')
     console.log('userObj: ', userObj);
     Auth.registerUser(userObj)
     .then(dataObj => {
+      $state.$emit('loggedIn');
       $state.go('verify');
-    });
+    })
+    .catch(err => {
+      console.log('register error: ', err);
+      $state.go('home');
+    })
   };
 });

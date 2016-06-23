@@ -22,6 +22,14 @@ angular.module('MightyShore')
     url             :    '/verify',
     templateUrl     :    'html/sign_in/verify.html'
   })
+  .state('verified', {
+    url             :    '/verified',
+    templateUrl     :    'html/sign_in/verified.html'
+  })
+  .state('unverified', {
+    url             :    '/unverified',
+    templateUrl     :    'html/sign_in/unverified.html'
+  })
   .state('login', {
     url             :    '/login',
     templateUrl     :    'html/sign_in/login.html',

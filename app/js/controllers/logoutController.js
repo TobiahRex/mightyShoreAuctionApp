@@ -7,7 +7,6 @@ angular.module('MightyShore')
   Auth.logoutUser()
   .then(res => {
     console.log('user logged out: ', res);
-    $state.go('splash');
+    $scope.$emit('loggedOut');
   });
-
 });

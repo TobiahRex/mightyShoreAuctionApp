@@ -8,8 +8,18 @@ body {
   font-size: 18px;
 }
 
+a.to-splash {
+  color: white;
+  background-color: transparent;
+}
+a.to-splash:hover {
+  text-decoration: none;
+  color: #2a9fd6;
+  background-color: transparent;
+}
+
+
 ul.profile-tabs.nav.nav-tabs {
-  /*border-bottom: 1px solid #000;*/
   width: 85%;
   margin-left: 8%
 }

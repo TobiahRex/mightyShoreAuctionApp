@@ -9,36 +9,37 @@
 
   <!-- VENDORS -->
 
-  <script src="/js/bower_components/angular/angular.min.js" charset="utf-8"></script>
-  <script src="/js/bower_components/angular-ui-router/release/angular-ui-router.js" charset="utf-8"></script>
-  <script src="/vendors/jquery.min.js" charset="utf-8"></script>
-  <script src="/vendors/bootstrap.min.js" charset="utf-8"></script>
-  <script src="/js/bower_components/angular-bootstrap/ui-bootstrap.min.js" charset="utf-8"></script>
+  <script src="/js/bower_components/angular/angular.min.js"></script>
+  <script src="/js/bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+  <script src="/vendors/jquery.min.js"></script>
+  <script src="/vendors/bootstrap.min.js"></script>
+  <script src="/js/bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
 
 
   <!-- APP -->
-  <script src="/js/app.js" charset="utf-8"></script>
-  <script src="/js/uiRouter_routes.js" charset="utf-8"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/uiRouter_routes.js"></script>
 
   <!-- CONTROLLERS -->
 
-  <script src="/js/controllers/splashController.js" charset="utf-8"></script>
-  <script src="/js/controllers/homeController.js" charset="utf-8"></script>
-  <script src="/js/controllers/registerController.js" charset="utf-8"></script>
-  <script src="/js/controllers/loginController.js" charset="utf-8"></script>
-  <script src="/js/controllers/logoutController.js" charset="utf-8"></script>
-  <script src="/js/controllers/forgotController.js" charset="utf-8"></script>
-  <script src="/js/controllers/profileController.js" charset="utf-8"></script>
+  <script src="/js/controllers/mainController.js"></script>
+  <script src="/js/controllers/splashController.js"></script>
+  <script src="/js/controllers/homeController.js"></script>
+  <script src="/js/controllers/registerController.js"></script>
+  <script src="/js/controllers/loginController.js"></script>
+  <script src="/js/controllers/logoutController.js"></script>
+  <script src="/js/controllers/forgotController.js"></script>
+  <script src="/js/controllers/profileController.js"></script>
 
   <!-- SERVICES -->
-  <script src="/js/services/authServices.js" charset="utf-8"></script>
+  <script src="/js/services/authServices.js"></script>
 
 
   <title>
     Mighty Shore
   </title>
 </head>
-<body ng-app='MightyShore'>
+<body ng-app='MightyShore' ng-controller='mainController'>
   <nav class="navbar navbar-default">
     <div class="container-fluid">
 
@@ -49,18 +50,21 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <span class="signature-nav navbar-brand"> <span class="text-primary">by</span> Tobiah Rex</span>
+        <span class="signature-nav navbar-brand"> <span class="text-primary">by</span><a class='to-splash' ui-sref='splash'> Tobiah Rex</a></span>
         <u class="nav navbar-nav navbar-left">
 
-          <li class="active"> <a ui-sref='splash'>Home</a> </li>
+          <li class="active"> <a ui-sref='home'>Home</a> </li>
         </u>
       </div>
 
       <div class="collapse navbar-collapse" id='collapse-nav'>
         <ul class="nav navbar-nav navbar-right">
-          <li class="active"><a ui-sref='login'>Login</a></li>
-          <li class="active"><a ui-sref='logout'>Logout</a></li>
-          <li class="active"><a ui-sref='register'>Register</a></li>
+          <!-- if logged in -->
+          <li class="active"><a ng-show='currentUser' ui-sref='login'>Profile</a></li>
+          <li class="active"><a ng-show='currentUser' ui-sref='logout'>Logout</a></li>
+          <!-- if NOT logged in -->
+          <li class="active"><a ng-hide='currentUser' ui-sref='login'>Login</a></li>
+          <li class="active"><a ng-hide='currentUser' ui-sref='register'>Register</a></li>
         </ul>
       </div>
 

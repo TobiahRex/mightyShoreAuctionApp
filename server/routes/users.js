@@ -14,13 +14,11 @@ router.route('/')
 });
 
 router.get('/profile', User.loginVerify, (req, res)=>{
-  console.log(req.user);
   res.send(req.user);
 });
 
 router.get('/verify/:token', (req, res)=>{
   User.emailVerify(req.params.token, (err, dbUser, result) => {
-    // console.log('err: ', err, '\ndbUser: ', dbUser, '\nresult: ', result);
     if(err) res.status(400).send(err);
     res.redirect('/#/login');
   });
