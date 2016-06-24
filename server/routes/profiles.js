@@ -16,9 +16,12 @@ router.route('/:id/new_items')
   // };
 );
 
-router.route('/:id/new_bids')
-.get((req, res)=> Profile.getNewBids(req.params.id, res.handle))
-.post((req, res)=> {  // Saving new Replies or Comments (api post @ click) ------- req.body = {
+router.route('/:id/auctions') // Users's posted items for Auction
+.get((req, res)=> Profile.getNewBids(req.params.id, res.handle)) // Bids other Users have made on Users' items.
+.post((req, res)=> { req.body.User_id = req.params.id; Profile.saveResponse(req.body, res.handle);});
+// Users responses
+    // save new Replies /Comments
+    // req.body = {
     //   Like      : false / true,
     //   Reply     : false / true,
     //   ReplyLike : false / true,
@@ -28,48 +31,28 @@ router.route('/:id/new_bids')
     //   ReplyId   :
     //   ReplyBody :
     // };
-  req.body.User_id = req.params.id;
-  Profile.saveResponse(req.body, res.handle);
-});
 
-router.get('/:id/get_active', (req, res)=> {
-  Profile.getActiveBids(req.params.id, res.handle);
-});
+router.get('/:id/activebids', (req, res)=> Profile.getActiveBids(req.params.id, res.handle));
 
-router.get('/:id/get_watchlist', (req, res)=> {
-  User.findById(req.params.id, (err, dbUser)=> {
-    err ? res.status(400).send(err) :
+router.route('/:id/watchlist')
+.get((req, res)=> Profile.getWatchList(req.params.id, res.handle))
+.post((req, res)=>{ req.body.UserId = req.params.id; Profile.updateBid(req.body, res.handle);})
+    // reqObj = {
+    //   UserId  :
+    //   ItemId  :
+    //   Ammount :
+    // }
 
+.delete((req, res)=> { req.body.UserId = req.params.id; Profile.removeWatch(req.body, res.handle);});
 
+router.get('/:id/stats', (req, res)=> Profile.getStat(req.params.id, res.handle));
 
-  })
-});
+router.route('/:id/account')
+.get((req, res)=> Profile.getAccount(req.params.id, res.handle))
+.post((req, res)=> { req.body.UserId = req.params.id; Profile.updateAccount(req.body, res.handle)});
 
-router.get('/:id/get_stats', (req, res)=> {
-  User.findById(req.params.id, (err, dbUser)=> {
-    err ? res.status(400).send(err) :
-
-
-
-  })
-});
-
-router.get('/:id/get_account', (req, res)=> {
-  User.findById(req.params.id, (err, dbUser)=> {
-    err ? res.status(400).send(err) :
-
-
-
-  })
-});
-
-router.get('/:id/get_chats', (req, res)=> {
-  User.findById(req.params.id, (err, dbUser)=> {
-    err ? res.status(400).send(err) :
-
-
-
-  })
-});
+router.route('/:id/chat')
+.get((req, res)=> Profile.getChats(req.params.id, res.handle))
+.post((req, res)=> {  req.body.UserId = req.params.id;Profile.updateChats(req.body, res.handle)});
 
 module.exports = router;

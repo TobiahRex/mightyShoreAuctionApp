@@ -28,12 +28,12 @@ let userSchema = new mongoose.Schema({
     required    :   true
   },
   Firstname     :   {
-      type      :   String,
-      required  :   true
+    type      :   String,
+    required  :   true
   },
   Lastname      :   {
-      type      :   String,
-      required  :   true
+    type      :   String,
+    required  :   true
   },
   Email         :   {
     type      :     'String',
@@ -51,10 +51,8 @@ let userSchema = new mongoose.Schema({
     type        :     String
   },
   Watchlist :   [{
-    ItemId      :   {
-      type      :     ObjectId,
-      ref       :     'Item'
-    }
+    type      :     ObjectId,
+    ref       :     'Item'
   }],
   ChatMsgs  :   [{  // chat messages user has written
     type        :     ObjectId,
@@ -77,19 +75,19 @@ let userSchema = new mongoose.Schema({
     ref         :   'Item'
   }],
   Social    :   {   // OAuth user ID's
-    facebook    :   {
-      type        :     String
-    },
-    twitter     :   {
-      type        :     String
-    },
-    instagram   :   {
-      type        :     String
-    }
+  facebook    :   {
+    type        :     String
   },
-  LastLogin   :   {
-    type        :     Date
+  twitter     :   {
+    type        :     String
+  },
+  instagram   :   {
+    type        :     String
   }
+},
+  LastLogin   :   {
+  type        :     Date
+}
 });
 
 // CRUD

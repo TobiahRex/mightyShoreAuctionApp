@@ -6,7 +6,7 @@ const Item    = require('./item');
 const User    = require('./user');
 
 let Profile = {
-  getNewItems(dbUser, cb){
+  getNewItems(dbUser, cb){ // move this method to Auction model
     User.findById(req.params.id, (err, dbUser)=> {
       if(err) return cb(err);
 
@@ -19,7 +19,7 @@ let Profile = {
       };
     });
   },
-  saveResponse(reqBody, cb){ // post('/api/profiles/new_bids')
+  newBid(reqBody, cb){ // move this method to Auction model
     let newBidObj = {
       UserId    : reqBody.User_id,
       Ammount  : reqBody.New_Bid,
@@ -32,24 +32,25 @@ let Profile = {
       });
     });
   },
-  getNewBids(userId, cb){
-      User.findById(req.params.id, (err, dbUser)=> {
-        if(err) return cb(err);
 
-        // Get Items belonging to User
-        Item.find({Owner : dbUser._id}, (err, usersAuctions)=> {
-          if(err) return cb(err);
+  getNewBids(userId, cb){ // new bids on users' posted Auctions since last login
+  User.findById(req.params.id, (err, dbUser)=> {
+    if(err) return cb(err);
 
-          // Filter Items since last login for NEW bids
-          let newBids = usersAuctions.map(auction => return auction.Bids.map(bid =>
-            return bid.BidDate > dbUser.LastLogin ? bid : null;
-          );
-        );
-        return cb(null, newBids);
-      });
-    });
-  },
-  saveResponse(reqObj, cb){
+    // Get Items belonging to User
+    Item.find({Owner : dbUser._id}, (err, usersAuctions)=> {
+      if(err) return cb(err);
+
+      // Filter Items since last login for NEW bids
+      let newBids = usersAuctions.map(auction => return auction.Bids.map(bid =>
+        return bid.BidDate > dbUser.LastLogin ? bid : null;
+      );
+    );
+    return cb(null, newBids);
+  });
+});
+},
+  saveResponse(reqObj, cb){ // users responses on own Auction posts
     // Saving new Replies or Comments (api post @ click)
     // req.body = {
     //   Like      : false / true,
@@ -95,6 +96,7 @@ let Profile = {
       dbItem.save(err=> err ? cb(err) : cb(null, {SUCCESS : `New Response Saved.`}));
     });
   },
+
   getActiveBids(userId, cb){
     User.findById(userId, (err, dbUser)=> {
       if(err) cb(err);
@@ -109,14 +111,47 @@ let Profile = {
       });
     });
   },
+
   getWatchList(userId, cb){
     User.findById(userId, (err, dbUser) =>{
       if(err) cb(err);
+      Item.find({'_id' : {$in : dbUser.Watchlist}}, (err, dbItems)=> {
+        let qErr = new Error(`Batch find for Watchlist UNSAT : ${err}`);
+        err ? cb(qErr) : cb(null, dbItems);
+      });
+    });
+  },
+  updateBid(reqObj, cb){
+    // reqObj = {
+    //   UserId  :
+    //   ItemId  :
+    //   Ammount :
+    // }
+    let thisUser,
+    thisItem;
+    User.find(reqObj.UserId, (err, dbUser)=> err ? cb(err) : thisUser = dbUser);
+    Item.find(reqObj.ItemId, (err, dbItem)=> err ? return cb(err) : thisItem = dbItem);
 
-      
-    })
-  }
+    let newBid = { UserId  : reqObj.UserId, Ammount : reqObj.Ammount };
+    thisUser.Bids.push(reqObj.ItemId);
+    thisItem.Bids.push(newBid);
+    thisItem.HighestBid = newBid;
+
+    thisItem.save((err, savedItem) => {
+      err ? cb(err) : thisUser.save((err, savedUser) => {
+        err ? cb(err) : cb(null, {savedItem, savedUser});
+      });
+    });
+  },
+  removeWatch(reqObj, cb){
+    User.find(reqObj.UserId, (err, dbUser)=> {
+      err ? cb(err) :
+      dbUser.Watchlist.filter(item => item !== reqObj.ItemId);
+      dbUser.save((err, savedUser) => err ? cb(err) : cb(null, savedUser));
+    });
+  },
+
+  
 };
-
 
 module.exports = Profile;
