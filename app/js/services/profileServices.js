@@ -19,8 +19,8 @@ angular.module('MightyShore')
 });
 
 
-class Profile {
-  getNewitems(userId){
-
-  }
-}
+// class Profile {
+//   getNewitems(userId){
+//
+//   }
+// }

@@ -8,8 +8,7 @@ const Profile = require('../models/profile');
 
 router.route('/:id/new_items')
 .get((req, res) => Profile.getNewItems(req.params.id, res.handle))
-.post((req, res) => Profile.saveResponse(req.body, res.handle);
-  // ---------req.body----------
+.post((req, res) => Profile.saveResponse(req.body, res.handle); // ---------req.body----------
   // req.body = {
   //   Item_id :
   //   User_id :
@@ -19,50 +18,22 @@ router.route('/:id/new_items')
 
 router.route('/:id/new_bids')
 .get((req, res)=> Profile.getNewBids(req.params.id, res.handle))
-.post((req, res)=> {  // TODO : Build model method
-  // Saving new Replies or Comments (api post @ click)
-  // req.body = {
-  //   Like      : false / true,
-  //   Reply     : false / true
-  //   Item_id   :
-  //   User_id   :
-  //   CommentId :
-  //   ReplyBody :
-  // };
-  // --------------SEND to Model ---------------
-  Item.findById(req.body.Item_id, (err, dbItem)=> {
-    if(err) res.status(400).send(err);
-    // find Comment
-    let Comment = dbItem.Comments.map(comment => {
-      return comment.CommentId === req.body.CommentId ? comment : null;
-    });
-
-    // Determine what types of response to insert
-    let responseObj = {}
-    if(req.body.Like) {
-      responseObj.LikeId = uuid();
-      responseObj.UserId = req.body.User_id;
-      Comment.Likes.push(resObj);
-    } else {
-      responseObj.ReplyId = uuid();
-      responseObj.UserId  = req.body.User_id;
-      Comment.Replies.push(resObj);
-    };
-    // Save
-    dbItem.save(err=>
-      res.status(err ? 400 : 200).send(err || {SUCCESS : `New Response Saved as ${resObj}`});
-    );
-  });
+.post((req, res)=> {  // Saving new Replies or Comments (api post @ click) ------- req.body = {
+    //   Like      : false / true,
+    //   Reply     : false / true,
+    //   ReplyLike : false / true,
+    //   ItemId   :
+    //   UserId   :
+    //   CommentId :
+    //   ReplyId   :
+    //   ReplyBody :
+    // };
+  req.body.User_id = req.params.id;
+  Profile.saveResponse(req.body, res.handle);
 });
 
-
-router.get('/:id/get_pending', (req, res)=> {
-  User.findById(req.params.id, (err, dbUser)=> {
-    err ? res.status(400).send(err) :
-
-
-
-  })
+router.get('/:id/get_active', (req, res)=> {
+  Profile.getActiveBids(req.params.id, res.handle);
 });
 
 router.get('/:id/get_watchlist', (req, res)=> {

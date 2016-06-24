@@ -50,6 +50,12 @@ let userSchema = new mongoose.Schema({
   Avatar    :   {
     type        :     String
   },
+  Watchlist :   [{
+    ItemId      :   {
+      type      :     ObjectId,
+      ref       :     'Item'
+    }
+  }],
   ChatMsgs  :   [{  // chat messages user has written
     type        :     ObjectId,
     ref         :     'Chat'
