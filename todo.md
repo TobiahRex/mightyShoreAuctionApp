@@ -1,9 +1,19 @@
-# Remove "New Items" from Profile Page
+#### FRONTEND TODO's ####
 
-  - Use the Model & route for the Auctions Home Page instead.
+# Remove "New Items" from Profile Page
 
   - Reconfigure "$scope.newItems = () => $scope.$broadcast('getNewItems'); // listener @ newItemController" for
 
-# Build AUCTION routes & Models
+
+
+
+
+#### BACKEND TODO's #####
+
+# Build ACCOUNT routes & Models
 
   - Include PUT api/auctions/:id
+
+# Build MAIL routes & Models
+
+# Build CHAT routes & Models

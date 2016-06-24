@@ -27,4 +27,10 @@ router.route('/:id')
   Item.deleteItem(req.params.id, res.handle);
 });
 
+// For User Profile Data
+router.route('/:id/new_items')
+.get((req, res) => Item.getNewItems(req.params.id, res.handle))
+.post((req, res) => Item.saveResponse(req.body, res.handle));
+
+
 module.exports = router;

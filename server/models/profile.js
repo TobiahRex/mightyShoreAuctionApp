@@ -6,32 +6,6 @@ const Item    = require('./item');
 const User    = require('./user');
 
 let Profile = {
-  getNewItems(dbUser, cb){ // move this method to Auction model
-    User.findById(req.params.id, (err, dbUser)=> {
-      if(err) return cb(err);
-
-      Item.find({}, (err, dbItems)=> {
-        if(err) return cb(err);
-
-        let recentItems = dbItems.map(dbItem => return dbUser.LastLogin < dbItem.Created ? dbItem : null);
-
-        cb(null, recentItems);
-      };
-    });
-  },
-  newBid(reqBody, cb){ // move this method to Auction model
-    let newBidObj = {
-      UserId    : reqBody.User_id,
-      Ammount  : reqBody.New_Bid,
-      BidDate   : Date.now()
-    };
-    Item.findById(reqBody.Item_id, (err, dbItem) => {
-      dbItem.Bids.push(newBidObj);
-      dbItem.save(err =>{
-        res.status(err ? 400 : 200).send(err || {SUCCESS : `New Bid Saved as ${newBidObj}`});
-      });
-    });
-  },
 
   getNewBids(userId, cb){ // new bids on users' posted Auctions since last login
   User.findById(req.params.id, (err, dbUser)=> {
@@ -152,7 +126,16 @@ let Profile = {
   },
 
   getStats(userId, cb){
-    User.
+    User.find(userId, (err, dbUser)=> {
+      if(err) cb(err);
+
+      let qErr = new Err(`Batch find for retrieving Stats UNSAT`);
+      Item.find({'_id'  : {$in : dbUser.Wins}}, (err, dbWinItems)=> {
+        err ? cb(qErr) : Item.find({'_id' : {$in : dbUser.Losses}}, (err, dbLossItems)=> {
+          err ? cb(qErr) : cb(null, {dbWinItems, dbLossItems});
+        })
+      });
+    });
   }
 };
 

@@ -177,6 +177,36 @@ itemSchema.statics.deleteItem = (itemId, cb) => {
   });
 };
 
+// For User Profiles
+
+itemSchema.statics.getNewItems = (dbUser, cb) => { // move this method to Auction model
+  User.findById(req.params.id, (err, dbUser)=> {
+    if(err) return cb(err);
+
+    Item.find({}, (err, dbItems)=> {
+      if(err) return cb(err);
+
+      let recentItems = dbItems.map(dbItem => dbUser.LastLogin < dbItem.Created ? dbItem : null);
+
+      cb(null, recentItems);
+    });
+  });
+};
+
+itemSchema.statics.newBid = (reqBody, cb) => { // move this method to Auction model
+  let newBidObj = {
+    UserId    : reqBody.User_id,
+    Ammount  : reqBody.New_Bid,
+    BidDate   : Date.now()
+  };
+  Item.findById(reqBody.Item_id, (err, dbItem) => {
+    dbItem.Bids.push(newBidObj);
+    dbItem.save(err =>{
+      res.status(err ? 400 : 200).send(err || {SUCCESS : `New Bid Saved as ${newBidObj}`});
+    });
+  });
+};
+
 let Item = mongoose.model('Item', itemSchema);
 
 module.exports = Item;

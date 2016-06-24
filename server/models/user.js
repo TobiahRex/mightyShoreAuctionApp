@@ -9,6 +9,7 @@ const JWT_SECRET  = process.env.JWT_SECRET;
 const ObjectId    = mongoose.Schema.Types.ObjectId;
 
 const Mail        = require('./mail');
+const Account     = require('./account');
 const Item        = require('./item');
 const Comment     = require('./comment');
 const Chat        = require('./chat');
@@ -54,10 +55,6 @@ let userSchema = new mongoose.Schema({
     type      :     ObjectId,
     ref       :     'Item'
   }],
-  ChatMsgs  :   [{  // chat messages user has written
-    type        :     ObjectId,
-    ref         :     'Chat'
-  }],
   Comments  :   [{  // comments user has posted @ auctions
     type        :   ObjectId,
     ref         :   'Comments'
@@ -82,20 +79,28 @@ let userSchema = new mongoose.Schema({
     type        :   ObjectId,
     ref         :   'Item'
   }],
+  AccountId :   {
+    type        :   ObjectId,
+    ref         :   'Account'
+  },
+  ChatId    :   {  // chat messages user has written
+    type        :     ObjectId,
+    ref         :     'Chat'
+  },
   Social    :   {   // OAuth user ID's
-  facebook    :   {
-    type        :     String
+    facebook    :   {
+      type          :     String
+    },
+    twitter     :   {
+      type          :     String
+    },
+    instagram   :   {
+      type          :     String
+    }
   },
-  twitter     :   {
-    type        :     String
-  },
-  instagram   :   {
-    type        :     String
+  LastLogin :   {
+    type        :     Date
   }
-},
-  LastLogin   :   {
-  type        :     Date
-}
 });
 
 // CRUD
