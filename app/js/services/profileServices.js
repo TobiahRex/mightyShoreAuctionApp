@@ -3,9 +3,9 @@
 angular.module('MightyShore')
 .service('Profile', function($http){
 
-    this.getNewItems    = userId => $http.get(`/api/profile/${userId}/get_new`);
+    this.getNewItems    = userId => $http.get(`/api/profile/${userId}/new_items`);
 
-    this.getOffers      = userId => $http.get(`/api/profile/${userId}/get_offers`);
+    this.getOffers      = userId => $http.get(`/api/profile/${userId}/new_bids`);
 
     this.getPendingBids = userId => $http.get(`/api/profile/${userId}/get_pending`);
 
@@ -17,3 +17,10 @@ angular.module('MightyShore')
 
     this.getChats       = userId => $http.get(`/api/profile/${userId}/get_chats`);
 });
+
+
+class Profile {
+  getNewitems(userId){
+
+  }
+}

@@ -6,32 +6,45 @@ const Item    = require('./item');
 
 let Profile = {
   getNewItems(dbUser, cb){
-    dbUser.LastLogin
-    // Get All Items
-    Item.find({}, (err, dbItems)=> {
-      if(err) res.status(400).send(err);
-      // Filter Items since last login
-      let recentItems = dbItems.map(dbItem => return dbUser.LastLogin < dbItem.Created ? item : null);
-      let yourBid = highestBid = {};
-      recentItems.map(item => {
-        item.Bids.map(bid => {
-          if(bid.Userid === dbUser._id) yourBid = bid;
-          if(bid.Ammount > highestBid.Amount) highestBid = bid;
-        });
-      });
-      let ngObj = { yourBid, recentItems, highestBid };
-    }
+    User.findById(req.params.id, (err, dbUser)=> {
+      if(err) return cb(err);
+
+      Item.find({}, (err, dbItems)=> {
+        if(err) return cb(err);
+
+        let recentItems = dbItems.map(dbItem => return dbUser.LastLogin < dbItem.Created ? dbItem : null);
+
+        cb(null, recentItems);
+      };
+    });
   },
-  saveResponse(reqBody, cb){
+  saveResponse(reqBody, cb){ // post('/api/profiles/new_bids')
     let newBidObj = {
       UserId    : reqBody.User_id,
-      Ammounnt  : reqBody.New_Bid,
+      Ammount  : reqBody.New_Bid,
       BidDate   : Date.now()
     };
     Item.findById(reqBody.Item_id, (err, dbItem) => {
       dbItem.Bids.push(newBidObj);
       dbItem.save(err =>{
         res.status(err ? 400 : 200).send(err || {SUCCESS : `New Bid Saved as ${newBidObj}`});
+      });
+    });
+  },
+  getNewBids(userId, cb){
+      User.findById(req.params.id, (err, dbUser)=> {
+        if(err) return cb(err);
+
+        // Get Items belonging to User
+        Item.find({Owner : dbUser._id}, (err, usersAuctions)=> {
+          if(err) return cb(err);
+
+          // Filter Items since last login for NEW bids
+          let newBids = usersAuctions.map(auction => return auction.Bids.map(bid =>
+            return bid.BidDate > dbUser.LastLogin ? bid : null;
+          );
+        );
+        return cb(null, newBids);
       });
     });
   }

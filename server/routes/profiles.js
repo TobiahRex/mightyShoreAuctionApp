@@ -7,63 +7,19 @@ const Item    = require('../models/item');
 const Profile = require('../models/profile');
 
 router.route('/:id/new_items')
-.get((req, res)=> {
-  User.findById(req.params.id, (err, dbUser)=> {
-    if(err) res.status(400).send(err);
-    Profile.getNewItems(dbuser, res.handle);
-  });
-})
-})
-.post((req, res) => {
-  Profile.saveResponse(req.body, res.handle);
-  // this would be making a bid from the new Items page
-  // ---------SEND this to Profiles Model----------
+.get((req, res) => Profile.getNewItems(req.params.id, res.handle))
+.post((req, res) => Profile.saveResponse(req.body, res.handle);
+  // ---------req.body----------
   // req.body = {
   //   Item_id :
   //   User_id :
   //   New_Bid :
   // };
-});
+);
 
-router.route('/:id/offers')
-.get((req, res)=> {
-  User.findById(req.params.id, (err, dbUser)=> {
-    err ? res.status(400).send(err) :
-
-    // Get Items belonging to User
-    Item.find({Owner : dbUser._id}, (err, userOffers)=> {
-      if(err) res.status(400).send(err);
-
-      let recentBids = comments = {};
-
-      // Filter Items since last login for NEW bids
-      let recentBids = userOffers.map(offer => return offer.Bids.map(bid =>
-        return bid.BidDate > dbUser.LastLogin ? bid : null;
-      );
-    );
-
-    userOffers.forEach(offer => {
-      offer.Comments.map(comment => {
-        comment.Userid
-      })
-    });
-
-    [ Offer [Comments [replies, [likes]], [likes]] ]
-
-    // -----------------------
-    // Get Users from Comments & Reply ID's.
-    // - Send Array of User Id
-    //  1) For Comments
-    //  2) For Replies
-    //
-    // Build Custom Obj
-    // let offerObj = {
-    //  Offers : [ [Item , [Comments, [Replies] ] ]  ]
-    // }
-  });
-});
-})
-.post((req, res)=> {
+router.route('/:id/new_bids')
+.get((req, res)=> Profile.getNewBids(req.params.id, res.handle))
+.post((req, res)=> {  // TODO : Build model method
   // Saving new Replies or Comments (api post @ click)
   // req.body = {
   //   Like      : false / true,
@@ -98,7 +54,6 @@ router.route('/:id/offers')
     );
   });
 });
-
 
 
 router.get('/:id/get_pending', (req, res)=> {

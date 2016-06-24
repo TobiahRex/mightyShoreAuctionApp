@@ -43,6 +43,15 @@ let itemSchema = new mongoose.Schema({
     type        :   ObjectId,
     ref         :   'User'
   }],
+  HighestBid  :   {  // = LAST BID
+    UserId       :   {
+      type       :  ObjectId,
+      ref       :   'User'
+    },
+    Ammount     :   {
+      type        :  Number
+    }
+  },
   Bids        :   [{
     UserId    :   {
       type        :   ObjectId,
@@ -56,37 +65,22 @@ let itemSchema = new mongoose.Schema({
     }
   }],
   Comments    :   [{
-    CommentId   :   {  // uuid
-      type      :   String
-    },
     UserId      :   {
       type      :     ObjectId,
       ref       :     'User'
     },
-    CommentDate :   {
-      type      :     Date
+    CommentId   :   {  // uuid
+      type      :   String
     },
-    Time        :   {
+    CommentDate :   {
       type      :     Date
     },
     Body        :   {
       type      :    String
     },
-    Replies     :   [{
-      ReplyId     :   { // uuid
-        type      :   String
-      },
-      UserId      :   {
-        type      :   ObjectId,
-        ref       :   'User'
-      },
-      Body        :   {
-        type      :   String
-      },
-      ReplyDate   :   {
-        type      :   Date
-      }
-    }],
+    Time        :   {
+      type      :     Date
+    },
     Likes       :   [{
       LikeId      :   { //uuid
         type      :     String
@@ -95,7 +89,31 @@ let itemSchema = new mongoose.Schema({
         type      :   ObjectId,
         ref       :   'User'
       }
-    }]
+    }],
+    Replies     :   [{
+      UserId      :   {
+        type      :   ObjectId,
+        ref       :   'User'
+      },
+      ReplyId     :   { // uuid
+        type      :   String
+      },
+      Body        :   {
+        type      :   String
+      },
+      ReplyDate   :   {
+        type      :   Date
+      },
+      Likes       :   [{
+        LikeId      :   { //uuid
+          type      :     String
+        },
+        UserId      :   {
+          type      :   ObjectId,
+          ref       :   'User'
+        }
+      }] // reply likes
+    }] // replies
   }],
   Categories  :   [{
     type      :   String
