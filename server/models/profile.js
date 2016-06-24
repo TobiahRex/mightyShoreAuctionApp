@@ -151,7 +151,9 @@ let Profile = {
     });
   },
 
-  
+  getStats(userId, cb){
+    User.
+  }
 };
 
 module.exports = Profile;

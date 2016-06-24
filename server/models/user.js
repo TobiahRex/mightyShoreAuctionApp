@@ -66,6 +66,14 @@ let userSchema = new mongoose.Schema({
     type        :   ObjectId,
     ref         :   'Item'
   }],
+  Wins      :   [{
+    type        :   ObjectId,
+    ref         :   'Item'
+  }],
+  Losses    :   [{
+    type        :   ObjectId,
+    ref         :   'Item'
+  }],
   Bids      :   [{  // bids user has made
     type        :   ObjectId,
     ref         :   'Item'

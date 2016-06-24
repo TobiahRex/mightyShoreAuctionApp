@@ -11,10 +11,27 @@ let itemSchema = new mongoose.Schema({
     ref         :   'User',
     required    :   true
   },
-  Status      :   {
-    type        :   String,
-    enum        :   ['Active', 'Expired', 'Sold'],
-    required    :   true
+  Stats       :   {
+    Status      :   {
+      type      :   String,
+      enum      :   ['Active', 'Expired', 'Sold'],
+      required  :   true
+    },
+    FinalBid    :   {
+      UserId      :   {
+        type        :     ObjectId,
+        ref         :     'User'
+      },
+      Ammount     :   {
+        type      :     Number
+      }
+    },
+    AverageBid  :   {
+      type        :     Number
+    },
+    Closed      :   {
+      type        :   Date
+    }
   },
   RenderDate  :   {
     type        :     Date

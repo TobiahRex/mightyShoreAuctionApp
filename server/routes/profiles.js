@@ -8,13 +8,12 @@ const Profile = require('../models/profile');
 
 router.route('/:id/new_items')
 .get((req, res) => Profile.getNewItems(req.params.id, res.handle))
-.post((req, res) => Profile.saveResponse(req.body, res.handle); // ---------req.body----------
+.post((req, res) => Profile.saveResponse(req.body, res.handle));
   // req.body = {
   //   Item_id :
   //   User_id :
   //   New_Bid :
   // };
-);
 
 router.route('/:id/auctions') // Users's posted items for Auction
 .get((req, res)=> Profile.getNewBids(req.params.id, res.handle)) // Bids other Users have made on Users' items.
@@ -45,7 +44,7 @@ router.route('/:id/watchlist')
 
 .delete((req, res)=> { req.body.UserId = req.params.id; Profile.removeWatch(req.body, res.handle);});
 
-router.get('/:id/stats', (req, res)=> Profile.getStat(req.params.id, res.handle));
+router.get('/:id/stats', (req, res)=> Profile.getStats(req.params.id, res.handle));
 
 router.route('/:id/account')
 .get((req, res)=> Profile.getAccount(req.params.id, res.handle))
