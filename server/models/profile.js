@@ -7,23 +7,23 @@ const User    = require('./user');
 
 let Profile = {
 
-  getNewBids(userId, cb){ // new bids on users' posted Auctions since last login
-  User.findById(req.params.id, (err, dbUser)=> {
-    if(err) return cb(err);
+      getNewBids(userId, cb){ // new bids on users' posted Auctions since last login
+      User.findById(req.params.id, (err, dbUser)=> {
+        if(err) return cb(err);
 
-    // Get Items belonging to User
-    Item.find({Owner : dbUser._id}, (err, usersAuctions)=> {
-      if(err) return cb(err);
+        // Get Items belonging to User
+        Item.find({Owner : dbUser._id}, (err, usersAuctions)=> {
+          if(err) return cb(err);
 
-      // Filter Items since last login for NEW bids
-      let newBids = usersAuctions.map(auction => return auction.Bids.map(bid =>
-        return bid.BidDate > dbUser.LastLogin ? bid : null;
-      );
-    );
-    return cb(null, newBids);
-  });
-});
-},
+          // Filter Items since last login for NEW bids
+          let newBids = usersAuctions.map(auction => return auction.Bids.map(bid =>
+            return bid.BidDate > dbUser.LastLogin ? bid : null;
+          );
+        );
+        return cb(null, newBids);
+      });
+    });
+  },
   saveResponse(reqObj, cb){ // users responses on own Auction posts
     // Saving new Replies or Comments (api post @ click)
     // req.body = {

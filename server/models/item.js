@@ -138,7 +138,7 @@ let itemSchema = new mongoose.Schema({
   Tags        :   [{
     type      :   String
   }]
-})
+});
 
 itemSchema.statics.newItem = (itemObj, cb) => {
   if(!itemObj) return cb({ERROR : `Did note provide Item Details. Try again.`});
