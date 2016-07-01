@@ -12,12 +12,16 @@ let Profile = {
         if(err) return cb(err);
 
         // Get Items belonging to User
-        Item.find({Owner : dbUser._id}, (err, usersAuctions)=> {
+        Item.find({Owner : dbUser._id})
+        .populate('User')
+        .exec((err, usersAuctions)=> {
           if(err) return cb(err);
 
           // Filter Items since last login for NEW bids
-          let newBids = usersAuctions.map(auction => return auction.Bids.map(bid =>
-            return bid.BidDate > dbUser.LastLogin ? bid : null;
+          let newBids = usersAuctions.map(auction => {
+            return auction.Bids.map(bid =>
+              return bid.BidDate > dbUser.LastLogin ? bid : null;
+          }
           );
         );
         return cb(null, newBids);
@@ -124,7 +128,6 @@ let Profile = {
       dbUser.save((err, savedUser) => err ? cb(err) : cb(null, savedUser));
     });
   },
-
   getStats(userId, cb){
     User.find(userId, (err, dbUser)=> {
       if(err) cb(err);

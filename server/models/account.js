@@ -7,18 +7,21 @@ const User = require('./user');
 const Item = require('./item');
 
 let accountSchema = new mongoose.Schema({
-  UserId    :     {
+  UserId          :   {
     type      :     ObjectId,
     ref       :     'User'
   },
-  Available :     {
+  Balance         :   {
     type      :     Number
   },
-  Equity    :     {
+  Available       :   {
     type      :     Number
   },
-  Deposits  :     {
-    depId     :     {
+  Equity          :   {
+    type      :     Number
+  },
+  Deposits        :   {
+    depositId :     {
       type      :     String
     },
     amount    :     {
@@ -29,10 +32,10 @@ let accountSchema = new mongoose.Schema({
       default   :     Date.now
     }
   },
-  Withdrawals :   {
+  Withdrawals     :   {
     withdId   :     {
       type      :     String
-    }
+    },
     amount    :     {
       type      :     Number
     },
@@ -45,7 +48,7 @@ let accountSchema = new mongoose.Schema({
       default   :     Date.now
     }
   },
-  Frozen      :    {
+  Frozen          :   {
     freezeId    :   {
       type        :   String
     },
@@ -62,7 +65,7 @@ let accountSchema = new mongoose.Schema({
       default     :   Date.now
     }
   },
-  ItemsPurchased:   {
+  ItemsPurchased  :   {
     purchaseId  :   {
       type        :   String
     },
@@ -82,7 +85,7 @@ let accountSchema = new mongoose.Schema({
       ref         :   'User'
     }
   },
-  ItemsSold :     {
+  ItemsSold       :   {
     soldId    :    {
       type      :   String
     },
@@ -101,7 +104,6 @@ let accountSchema = new mongoose.Schema({
       type        :   ObjectId,
       ref         :   'User'
     }
-
   }
 });
 

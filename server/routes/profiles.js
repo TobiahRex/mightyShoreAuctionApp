@@ -16,7 +16,10 @@ router.get('/:id/activebids', (req, res)=> Profile.getActiveBids(req.params.id, 
 
 router.route('/:id/watchlist')
 .get((req, res)=> Profile.getWatchList(req.params.id, res.handle))
-.post((req, res)=>{ req.body.UserId = req.params.id; Profile.updateBid(req.body, res.handle);})
+.post((req, res)=>{
+  req.body.UserId = req.params.id;
+  Profile.updateBid(req.body, res.handle);
+})
 
 .delete((req, res)=> { req.body.UserId = req.params.id; Profile.removeWatch(req.body, res.handle);});
 

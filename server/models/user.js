@@ -55,9 +55,11 @@ let userSchema = new mongoose.Schema({
     type      :     ObjectId,
     ref       :     'Item'
   }],
-  Comments  :   [{  // comments user has posted @ auctions
-    type        :   ObjectId,
-    ref         :   'Comments'
+  Comments  :   [{
+    type        :   String
+  }],
+  Replies  :   [{
+    type        :   String
   }],
   Items     :   [{  // items user has posted for auction
     type        :   ObjectId,
