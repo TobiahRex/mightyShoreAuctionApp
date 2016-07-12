@@ -112,3 +112,17 @@ i.fa.fa-5x.text-primary:hover {
   font-size: 16px !important;
   color: #E7E7E7 !important;
 }
+
+div.jumbotron.profile-jumbo {
+  max-width: 62%;
+  background-color: rgba(0, 0, 0, 0.33) ;
+}
+
+div.jumbotron.user-jumbo {
+  max-width: 62%;
+  background-color: rgba(0, 0, 0, 0.33) ;
+}
+
+.profile-picture {
+  border-radius: 50%;
+}
