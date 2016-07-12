@@ -21,7 +21,7 @@ router.post('/facebook', (req, res)=>{
     code          : req.body.code,
     client_id     : req.body.clientId,
     client_secret : FACEBOOK_SECRET,
-    redirect_uri  : req.body.redirect_uri
+    redirect_uri  : req.body.redirectUri
   };
 
   request.get({
@@ -29,7 +29,7 @@ router.post('/facebook', (req, res)=>{
     qs    :   params,
     json  :   true
   }, (err, response, accessToken)=>{
-    console.log('this is your error: ', err);
+    console.log('this is your error: ', accessToken);
     if(response.statusCode !== 200) return res.status(400).send({ERROR : accessToken.error.message});
     console.log('accessToken RECEIVED: \n', accessToken);
 

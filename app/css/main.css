@@ -101,3 +101,9 @@ i.fa.fa-5x.text-primary:hover {
   color : #FFFFFF;
   cursor : pointer;
 }
+
+.toastr-logout {
+  background-color: rgba(20, 20, 20) !important;
+  box-shadow: 0px 4px 97px rgba(74, 255, 0, 1) !important;
+  color: rgba(74, 255, 0, 1) !important;
+};

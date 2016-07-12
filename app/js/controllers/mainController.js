@@ -10,6 +10,7 @@ angular.module('MightyShore')
       $state.go('profile', {id : res.data._id});
     })
     .catch(err => {
+      console.log('login error: ', err);
       $scope.currentUser = null;
       $state.go('login');
     });
