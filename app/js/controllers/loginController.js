@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('MightyShore')
-.controller('loginController', function($scope, $state, $auth, Auth){
+.controller('loginController', function($scope, $state, Auth){
   console.log('loginCtrl');
   $scope.loginUser = loginObj => {
     $auth.login(loginObj)
@@ -19,3 +19,4 @@ angular.module('MightyShore')
     .catch(err=> console.log('ERROR: login error'))
   };
 });
+9

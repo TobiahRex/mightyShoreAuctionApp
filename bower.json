@@ -11,7 +11,7 @@
     "**/.*",
     "node_modules",
     "bower_components",
-    "app/assets/bower_components",
+    "app/bower_components",
     "test",
     "tests"
   ],
@@ -24,9 +24,10 @@
     "angular-toastr": "^1.7.0",
     "satellizer": "^0.14.1",
     "angular-animate": "^1.5.7",
-    "moment": "^2.14.1"
+    "moment": "^2.14.1",
+    "ng-file-upload": "^12.0.4"
   },
   "resolutions": {
-    "angular": "1.5.7"
+    "angular": "^1.5.7"
   }
 }
