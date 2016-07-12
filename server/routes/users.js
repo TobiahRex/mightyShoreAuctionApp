@@ -6,11 +6,10 @@ let User    = require('../models/user');
 
 // Authorization Routes
 router.post('/register', (req, res) => User.register(req.body, res.handle));
+
 router.route('/login')
 .post((req, res)=> {
-  User.authenticate(req.body, (err, tokenPkg ) => {
-    err ? res.status(400).send(err) : res.cookie('accessToken', tokenPkg.token).status(200).send('User is logged in.');
-  });
+  User.authenticate(req.body, (err, tokenPkg ) => err ? res.status(400).send(err) : res.status(200).send({token : tokenPkg.token}));
 });
 router.post('/logout', (req, res)=> res.clearCookie('accessToken').status(200).send({SUCCESS : `User has been Logged out.`}));
 router.get('/verify/:token', (req, res) =>{
@@ -19,6 +18,7 @@ router.get('/verify/:token', (req, res) =>{
     res.redirect('/#/login');
   });
 });
+
 router.put('/:id/toggle_admin', User.authorize({Admin : true}), (req, res)=>{
   User.findById(req.params.id, (err, dbUser)=>{
     if(err) res.status(400).send({ERROR : 'Could not find a user by that id.'});

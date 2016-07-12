@@ -9,12 +9,13 @@ const request         = require('request');
 const QS              = require('querystring');
 const JWT_SECRET      = process.env.JWT_SECRET;
 const FACEBOOK_SECRET = process.env.FACEBOOK_SECRET;
-const User            = require('./user');
+const User            = require('../models/user');
 
 
 router.post('/facebook', (req, res)=>{
+  console.log('req: ', req.body);
   let fields = ['id', 'email', 'first_name', 'last_name', 'gender', 'link', 'name', 'picture', 'cover'];
-  let accessToken = 'https://graph.facebook.com/v2.5/oauth/access_token';
+  let accessTokenUrl = 'https://graph.facebook.com/v2.5/oauth/access_token';
   let graphApiUrl = 'https://graph.facebook.com/v2.5/me?fields=' + fields.join(',');
   let params = {
     code          : req.body.code,
@@ -28,6 +29,7 @@ router.post('/facebook', (req, res)=>{
     qs    :   params,
     json  :   true
   }, (err, response, accessToken)=>{
+    console.log('this is your error: ', err);
     if(response.statusCode !== 200) return res.status(400).send({ERROR : accessToken.error.message});
     console.log('accessToken RECEIVED: \n', accessToken);
 

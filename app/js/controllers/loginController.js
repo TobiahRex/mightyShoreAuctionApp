@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('MightyShore')
-.controller('loginController', function($scope, $state, Auth){
+.controller('loginController', function($scope, $state, $auth, Auth){
   console.log('loginCtrl');
   $scope.loginUser = loginObj => {
     $auth.login(loginObj)

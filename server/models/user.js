@@ -216,6 +216,7 @@ userSchema.statics.authenticate = (userObj, cb) => {
     dbUser.save((err, savedUser)=> {
       if(err) return cb(err);
       savedUser._Password = null;
+      console.log('token: ', token);
       cb(null, {token, savedUser});
     });
   });
@@ -223,6 +224,7 @@ userSchema.statics.authenticate = (userObj, cb) => {
 
 userSchema.statics.authorize = function(clearance = {Admin : false}){
   return function(req, res, next){
+    console.log('req.headers: ', req.headers);
     let tokenHeader = req.headers.authorization;
     console.log('tokenHeader: ', tokenHeader);
     if(!tokenHeader) return res.status(400).send({ERROR : 'User not found'});
