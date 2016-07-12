@@ -55,70 +55,70 @@ let userSchema = new mongoose.Schema({
     type        :     String
   },
   Social    :   {   // OAuth user ID's
-    facebookId    :   {
-      type          :     String
-    },
-    twitterId     :   {
-      type          :     String
-    },
-    instagramId   :   {
-      type          :     String
-    },
-    gitHubId      :   {
-      type          :     String
-    }
+  facebookId    :   {
+    type          :     String
   },
-  LastLogin :   {
-    type        :     Date
+  twitterId     :   {
+    type          :     String
   },
-  rComments  :   [{
-    type        :   ObjectId,
-    ref         :   'Comment'
-  }],
-  wComments  :    [{
-    type        :   ObjectId,
-    ref         :   'Comment'
-  }],
-  rMessages   :   [{
-    type        :   ObjectId,
-    ref         :   'Message'
-  }],
-  wMessages   :   [{
-    type        :   ObjectId,
-    ref         :   'Message'
-  }],
-  Watchlist :   [{
-    type      :     ObjectId,
-    ref       :     'Item'
-  }],
-  Items     :   [{  // items user has posted for auction
-    type        :   ObjectId,
-    ref         :   'Item'
-  }],
-  Wins      :   [{
-    type        :   ObjectId,
-    ref         :   'Item'
-  }],
-  Losses    :   [{
-    type        :   ObjectId,
-    ref         :   'Item'
-  }],
-  Bids      :   [{  // bids user has made
-    type        :   ObjectId,
-    ref         :   'Item'
-  }],
-  Likes     :   [{  // auctions user has liked
-    type        :   ObjectId,
-    ref         :   'Item'
-  }],
-  AccountId :   {
-    type        :   ObjectId,
-    ref         :   'Account'
+  instagramId   :   {
+    type          :     String
   },
-  ChatId    :   {  // chat messages user has written
-    type        :   ObjectId,
-    ref         :   'Chat'
+  gitHubId      :   {
+    type          :     String
   }
+},
+LastLogin :   {
+  type        :     Date
+},
+rComments  :   [{
+  type        :   ObjectId,
+  ref         :   'Comment'
+}],
+wComments  :    [{
+  type        :   ObjectId,
+  ref         :   'Comment'
+}],
+rMessages   :   [{
+  type        :   ObjectId,
+  ref         :   'Message'
+}],
+wMessages   :   [{
+  type        :   ObjectId,
+  ref         :   'Message'
+}],
+Watchlist :   [{
+  type      :     ObjectId,
+  ref       :     'Item'
+}],
+Items     :   [{  // items user has posted for auction
+  type        :   ObjectId,
+  ref         :   'Item'
+}],
+Wins      :   [{
+  type        :   ObjectId,
+  ref         :   'Item'
+}],
+Losses    :   [{
+  type        :   ObjectId,
+  ref         :   'Item'
+}],
+Bids      :   [{  // bids user has made
+  type        :   ObjectId,
+  ref         :   'Item'
+}],
+Likes     :   [{  // auctions user has liked
+  type        :   ObjectId,
+  ref         :   'Item'
+}],
+AccountId :   {
+  type        :   ObjectId,
+  ref         :   'Account'
+},
+ChatId    :   {  // chat messages user has written
+  type        :   ObjectId,
+  ref         :   'Chat'
+}
 });
 
 // CRUD
@@ -218,23 +218,29 @@ userSchema.statics.authenticate = (userObj, cb) => {
   });
 };
 
-userSchema.statics.loginVerify = function(req, res, next){
-  let token = req.cookies.accessToken;
-  JWT.verify(token, JWT_SECRET, (err, payload) => {
-    if(err) return res.status(400).send({ERROR : `HACKER! You are not Authorized!`});
-    User.findById(payload._id)
-    .select({_Password : false})
-    .exec((err, dbUser)=> {
-      if(err || !dbUser){
-        return
-        res.clearCookie('accessToken')
-        .status(400)
-        .send(err || {error : `User Not Found.`});
-      }; // else
-      req.user = dbUser;
-      next();
+userSchema.statics.authorize = function(clearance = {Admin : false}){
+  return function(req, res, next){
+    let tokenHeader = req.headers.authorization;
+    console.log('tokenHeader: ', tokenHeader);
+    if(!tokenHeader) return res.status(400).send({ERROR : 'User not found'});
+    let token = tokenHeader.split(' ')[1];
+
+    JWT.verify(token, JWT_SECRET, (err, payload) => {
+      if(err) return res.status(400).send({ERROR : `HACKER! You are not Authorized!`});
+      User.findById(payload._id)
+      .select({_Password : false})
+      .exec((err, dbUser)=> {
+        if(err || !dbUser){
+          return
+          res.clearCookie('accessToken')
+          .status(400)
+          .send(err || {error : `User Not Found.`});
+        };
+        req.user = dbUser;
+        next();
+      });
     });
-  });
+  };
 };
 
 userSchema.methods.createToken = function(){
