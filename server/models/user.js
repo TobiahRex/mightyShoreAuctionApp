@@ -13,12 +13,12 @@ const Account     = require('./account');
 const Item        = require('./item');
 const Comment     = require('./comment');
 const Chat        = require('./chat');
+const deepPopulate= require('mongoose-deep-populate')(mongoose);
 
 let userSchema = new mongoose.Schema({
-  Access    :   {
-    type        :   String,
-    enum        :   ['Administrator', 'Moderator', 'Customer', 'Not-Assigned'],
-    required    :   true
+  Admin     :   {
+    type        :   Boolean,
+    default     :   false
   },
   Username  :   {
     type        :   String,
@@ -51,15 +51,45 @@ let userSchema = new mongoose.Schema({
   Avatar    :   {
     type        :     String
   },
+  CoverPhoto:   {
+    type        :     String
+  },
+  Social    :   {   // OAuth user ID's
+    facebookId    :   {
+      type          :     String
+    },
+    twitterId     :   {
+      type          :     String
+    },
+    instagramId   :   {
+      type          :     String
+    },
+    gitHubId      :   {
+      type          :     String
+    }
+  },
+  LastLogin :   {
+    type        :     Date
+  },
+  rComments  :   [{
+    type        :   ObjectId,
+    ref         :   'Comment'
+  }],
+  wComments  :    [{
+    type        :   ObjectId,
+    ref         :   'Comment'
+  }],
+  rMessages   :   [{
+    type        :   ObjectId,
+    ref         :   'Message'
+  }],
+  wMessages   :   [{
+    type        :   ObjectId,
+    ref         :   'Message'
+  }],
   Watchlist :   [{
     type      :     ObjectId,
     ref       :     'Item'
-  }],
-  Comments  :   [{
-    type        :   String
-  }],
-  Replies  :   [{
-    type        :   String
   }],
   Items     :   [{  // items user has posted for auction
     type        :   ObjectId,
@@ -86,22 +116,8 @@ let userSchema = new mongoose.Schema({
     ref         :   'Account'
   },
   ChatId    :   {  // chat messages user has written
-    type        :     ObjectId,
-    ref         :     'Chat'
-  },
-  Social    :   {   // OAuth user ID's
-    facebook    :   {
-      type          :     String
-    },
-    twitter     :   {
-      type          :     String
-    },
-    instagram   :   {
-      type          :     String
-    }
-  },
-  LastLogin :   {
-    type        :     Date
+    type        :   ObjectId,
+    ref         :   'Chat'
   }
 });
 
@@ -112,6 +128,8 @@ userSchema.statics.getUser = (userId, cb) => {
     err ? cb(err) : cb(null, dbUser);
   });
 };
+
+userSchema.statics.getAllPopulate = cb => User.find({}).deepPopulate('rComments, wComments, rMessages, wMessages').exec((err, dbUsers)=> err ? cb(err) : cb(null, dbUsers));
 
 userSchema.statics.updateUser = (userObj, cb) => {
   if(!userObj.id) return cb({ERROR : `User ID ${userObj.id} not Found. Verify ID.`});
@@ -134,6 +152,7 @@ userSchema.statics.register = function(newUserObj, cb){
   User.findOne({Email : newUserObj.Email}, (err, dbUser)=>{
     if(err || dbUser) return cb(err || {ERROR : `That Email has already been taken.`});
   });
+
   BCRYPT.hash(newUserObj._Password, 12, (err, hash)=> {
     if(err) cb(err);
 
@@ -150,8 +169,7 @@ userSchema.statics.register = function(newUserObj, cb){
     user.save((err, savedUser)=> {
       if(err) return cb(err);
 
-      Mail.verify(savedUser, response =>{
-
+      Mail.verify(savedUser, response => {
         if(response.statusCode !== 202) return cb(err);
         savedUser._Password = null;
         cb(err, savedUser);
@@ -166,17 +184,14 @@ userSchema.methods.profileLink = function(){
     _id :   this._id,
     exp :   moment().add(1, 'w').unix()
   };
-
   let token = JWT.sign(payload, JWT_SECRET);
   return `http://localhost:3000/api/users/verify/${token}`;
 };
 
 userSchema.statics.emailVerify = (token, cb) => {
   if(!token) return cb({ERROR : 'Token not recieved.'});
-
   JWT.verify(token, JWT_SECRET, (err, payload)=> {
     if(err) return res.status(400).send(err);
-    // if(payload.exp < Date.now()) return cb({ERROR : `Verification link expired on ${Date(payload.exp)}`});
 
     User.findById(payload._id, (err, dbUser)=> {
       if(err || !dbUser) return cb(err || 'User not found');
@@ -185,6 +200,7 @@ userSchema.statics.emailVerify = (token, cb) => {
     });
   });
 };
+
 // Auth MiddleWare
 userSchema.statics.authenticate = (userObj, cb) => {
   User.findOne({Username  :   userObj.Username}, (err, dbUser) => {

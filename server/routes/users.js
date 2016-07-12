@@ -4,7 +4,6 @@ let express = require('express');
 let router  = express.Router();
 let User    = require('../models/user');
 
-// only Keep During Build - Remove after Project Completion
 router.route('/')
 .get((req, res) =>{
   User.find({}, res.handle);
@@ -17,8 +16,8 @@ router.get('/profile', User.loginVerify, (req, res)=>{
   res.send(req.user);
 });
 
-router.get('/verify/:token', (req, res)=>{
-  User.emailVerify(req.params.token, (err, dbUser, result) => {
+router.get('/verify/:token', (req, res) =>{
+  User.emailVerify(req.params.token, err => {
     if(err) res.status(400).send(err);
     res.redirect('/#/login');
   });
@@ -31,8 +30,7 @@ router.post('/register', (req, res) => {
 router.route('/login')
 .post((req, res)=> {
   User.authenticate(req.body, (err, tokenPkg ) => {
-    err ? res.status(400).send(err) :
-    res.cookie('accessToken', tokenPkg.token).status(200).send('User is logged in.');
+    err ? res.status(400).send(err) : res.cookie('accessToken', tokenPkg.token).status(200).send('User is logged in.');
   });
 })
 .delete((req, res)=> {

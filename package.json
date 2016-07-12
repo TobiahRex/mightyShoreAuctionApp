@@ -33,6 +33,7 @@
     "jsonwebtoken": "^7.0.1",
     "moment": "^2.13.0",
     "mongoose": "^4.5.0",
+    "mongoose-deep-populate": "^3.0.0",
     "morgan": "^1.7.0",
     "path": "^0.12.7",
     "sendgrid": "^3.0.5"

@@ -82,55 +82,8 @@ let itemSchema = new mongoose.Schema({
     }
   }],
   Comments    :   [{
-    UserId      :   {
-      type      :     ObjectId,
-      ref       :     'User'
-    },
-    CommentId   :   {  // uuid
-      type      :   String
-    },
-    CommentDate :   {
-      type      :     Date
-    },
-    Body        :   {
-      type      :    String
-    },
-    Time        :   {
-      type      :     Date
-    },
-    Likes       :   [{
-      LikeId      :   { //uuid
-        type      :     String
-      },
-      UserId      :   {
-        type      :   ObjectId,
-        ref       :   'User'
-      }
-    }],
-    Replies     :   [{
-      UserId      :   {
-        type      :   ObjectId,
-        ref       :   'User'
-      },
-      ReplyId     :   { // uuid
-        type      :   String
-      },
-      Body        :   {
-        type      :   String
-      },
-      ReplyDate   :   {
-        type      :   Date
-      },
-      Likes       :   [{
-        LikeId      :   { //uuid
-          type      :     String
-        },
-        UserId      :   {
-          type      :   ObjectId,
-          ref       :   'User'
-        }
-      }] // reply likes
-    }] // replies
+    type : ObjectId,
+    ref : 'Comment'
   }],
   Categories  :   [{
     type      :   String

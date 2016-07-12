@@ -19,7 +19,6 @@ app.use(express.static(path.join(__dirname, 'app')));
 app.use(cookieParser());
 app.use((req, res, next) => {
   res.handle = (err, dbData) => {
-    console.log(`ERROR: ${err}` || `DATA: ${dbData}`);
     res.status(err ? 400 : 200).send(err || dbData);
   };
   next();
