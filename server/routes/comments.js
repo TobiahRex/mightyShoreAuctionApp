@@ -9,7 +9,7 @@ router.route('/')
 .get((req, res)=> Comment.find({}, res.handle))
 .delete((req, res)=> Comment.remove({}, res.handle));
 
-router.post('/:user/new/:person', (res, res)=> {
+router.post('/:user/new/:person', (req, res)=> {
   let reqBody = {
     user    : req.params.user,
     person  : req.params.person,

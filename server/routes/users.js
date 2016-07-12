@@ -4,32 +4,32 @@ let express = require('express');
 let router  = express.Router();
 let User    = require('../models/user');
 
+// Authorization Routes
 router.post('/register', (req, res) => User.register(req.body, res.handle));
-
 router.route('/login')
 .post((req, res)=> {
   User.authenticate(req.body, (err, tokenPkg ) => {
     err ? res.status(400).send(err) : res.cookie('accessToken', tokenPkg.token).status(200).send('User is logged in.');
   });
 });
-
 router.post('/logout', (req, res)=> res.clearCookie('accessToken').status(200).send({SUCCESS : `User has been Logged out.`}));
-
 router.get('/verify/:token', (req, res) =>{
   User.emailVerify(req.params.token, err => {
     if(err) res.status(400).send(err);
     res.redirect('/#/login');
   });
 });
-
+router.put('/:id/toggle_admin', User.authorize({Admin : true}), (req, res)=>{
+  User.findById(req.params.id, (err, dbUser)=>{
+    if(err) res.status(400).send({ERROR : 'Could not find a user by that id.'});
+    dbUser.Admin = !dbUser.Admin;
+    dbUser.save(res.handle);
+  });
+});
 router.get('/profile', User.authorize({Admin : false}), (req, res)=> res.send(req.user));
 
+// User CRUD routes
 router.get('/populate', (req, res)=> User.getAllPopulate(res.handle));
-
-router.route('/')
-.get((req, res) =>User.find({}, res.handle))
-.delete((req, res)=> User.remove({}, res.handle));
-
 router.route('/:id')
 .get((req, res)=> User.getUser(req.params.id, res.handle))
 .put((req, res)=> {
@@ -37,6 +37,34 @@ router.route('/:id')
   User.updateUser(userObj, res.handle);
 })
 .delete((req, res) => User.removeUser(req.params.id, res.handle));
+router.get('/', (req, res) =>User.find({}, res.handle));
 
+////////////////////// Dev routes DELETE BEFORE DEPLOY/////////////////////////////////////
+router.delete('/', (req, res)=> User.remove({}, res.handle));
+router.post('/:id/make_admin', (req, res)=>{
+  User.findById(req.params.id, (err, dbUser)=>{
+    dbUser.Admin = !dbuser.Admin;
+    dbUser.save(res.handle);
+  });
+});
+
+router.delete('/comments', (req, res)=>{
+  User.find({}, (err, dbUsers)=>{
+    dbUsers.forEach(dbUser=>{
+      dbUser.wComments = [];
+      dbUser.rComments = [];
+      dbUser.save(res.handle);
+    });
+  });
+});
+router.delete('/messages', (req, res)=>{
+  User.find({}, (err, dbUsers)=>{
+    dbUsers.forEach(dbUser=>{
+      dbUser.wMessages = [];
+      dbUser.rMessages = [];
+      dbUser.save(res.handle);
+    });
+  });
+});
 
 module.exports = router;

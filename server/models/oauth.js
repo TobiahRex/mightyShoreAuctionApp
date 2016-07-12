@@ -59,16 +59,42 @@ router.post('/facebook', (req, res)=>{
             dbUser.CoverPhoto         = profile.cover.source;
             dbUser.Username           = dbUser.Username || profile.name;
 
-            
-
-
+            dbUser.save((err, savedUser)=>{
+              if(err) return res.status(400).send({ERROR : `Could not save user | Details ${err}`});
+              let token = dbUser.createToken();
+              req.user = savedUser;
+              res.send(token);
+            });
           });
         });
       } else {
+        User.findOne(profile.id, (err, dbUser)=>{
+          if(dbUser){
+            let token = dbUser.createToken();
+            return res.send({token});
+          };
 
-      }
+          let newUser = new User({
+            Email              : profile.email,
+            Firstname          : profile.first_name,
+            Lastname           : profile.last_name,
+            Social             : {facebookLink : profile.link, facebookId : profile.id},
+            Avatar             : Avatar || 'https://graph.facebook.com/v2.3/' + profile.id + '/picture?type=large',
+            CoverPhoto         : profile.cover.source,
+            Username           : Username || profile.name
+          });
 
-
+          newUser.save((err, savedUser)=>{
+            console.log('err: ', err);
+            if(err) return res.status(400).send({ERROR : `Could not save new User | Details : ${err}`});
+            let token = savedUser.createToken();
+            console.log('new SAVED USER: \n', savedUser);
+            res.send({token});
+          });
+        });
+      };
     });
   });
 });
+
+module.exports = router;

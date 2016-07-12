@@ -1,5 +1,9 @@
 body {
-  background-image: url("/css/images/dark-concrete.png");
+  background-image: url("./images/dark-concrete.png");
+}
+
+button.btn.btn-lg.btn-primary {
+  margin-left: 50%;
 }
 
 .navbar-default .navbar-nav > .active > a {
@@ -87,4 +91,13 @@ div.enter-button > button.btn-primary.btn-lg {
 .form-control {
   background-color: #060606;
   font-size: 18px;
+}
+
+a.social-buttons {
+  cursor : pointer;
+}
+
+i.fa.fa-5x.text-primary:hover {
+  color : #FFFFFF;
+  cursor : pointer;
 }

@@ -1,7 +1,15 @@
 'use strict';
 
 angular.module('MightyShore')
-.config(function($stateProvider, $urlRouterProvider){
+.config(function($stateProvider, $urlRouterProvider, $authProvider){
+  $authProvider.loginUrl = '/api/users/login';
+  $authProvider.signupUrl = '/api/users/register';
+
+  $authProvider.facebook({
+    clientId :  '1563271557312110'
+    url      :  '/api/oauth/facebook'
+  });
+
   $stateProvider
   .state('splash', {
     url             :    '/',
@@ -54,7 +62,7 @@ angular.module('MightyShore')
     controller      :    'forgotController'
   })
   .state('profile', {
-    url             :     '/profile',
+    url             :     '/profile/:id',
     templateUrl     :     'html/profile.html',
     controller      :     'profileController',
     resolve         :     {
@@ -69,4 +77,31 @@ angular.module('MightyShore')
   });
 
   $urlRouterProvider.otherwise('/');
+
+  angular.extend(toastrConfig, {
+    allowHtml: false,
+    closeButton: false,
+    closeHtml: '<button>&times;</button>',
+    extendedTimeOut: 5000,
+    iconClasses: {
+      error: 'toast-error',
+      info: 'toast-info',
+      success: 'toast-success',
+      warning: 'toast-warning'
+    },
+    messageClass: 'toast-message',
+    onHidden: null,  // cb()'s
+    onShown: null,   //
+    onTap: null,     //
+    progressBar: false,
+    tapToDismiss: true,
+    templates: {
+      toast: 'directives/toast/toast.html',
+      progressbar: 'directives/progressbar/progressbar.html'
+    },
+    timeOut: 5000,
+    titleClass: 'toast-title',
+    toastClass: 'toast'
+  });
+  // Detailed Info @ https://github.com/Foxandxss/angular-toastr
 });

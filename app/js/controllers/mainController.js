@@ -7,6 +7,7 @@ angular.module('MightyShore')
     Auth.getProfile()
     .then(res => {
       $scope.currentUser = res.data;
+      $state.go('profile', {id : res.data._id});
     })
     .catch(err => {
       $scope.currentUser = null;
