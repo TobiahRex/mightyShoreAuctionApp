@@ -57,6 +57,7 @@ router.post('/facebook', (req, res)=>{
             dbUser.Lastname           = profile.last_name;
             dbUser.Social.facebookId  = profile.id;
             dbUser.Social.facebookLink= profile.link;
+            dbUser.LastLogin          = Date.now();
             dbUser.Avatar             = dbUser.Avatar || 'https://graph.facebook.com/v2.3/' + profile.id + '/picture?type=large';
             dbUser.CoverPhoto         = profile.cover.source;
             dbUser.Username           = dbUser.Username || profile.name;
@@ -83,6 +84,7 @@ router.post('/facebook', (req, res)=>{
             Social             : {facebookLink : profile.link, facebookId : profile.id},
             Avatar             : 'https://graph.facebook.com/v2.3/' + profile.id + '/picture?type=large',
             CoverPhoto         : profile.cover.source,
+            LastLogin          : Date.now(),
             Username           : profile.name
           });
 
