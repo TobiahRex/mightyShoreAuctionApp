@@ -102,8 +102,13 @@ i.fa.fa-5x.text-primary:hover {
   cursor : pointer;
 }
 
-.toastr-logout {
+.toast-logout {
   background-color: rgba(20, 20, 20) !important;
   box-shadow: 0px 4px 97px rgba(74, 255, 0, 1) !important;
   color: rgba(74, 255, 0, 1) !important;
-};
+}
+
+.toast-title {
+  font-size: 16px !important;
+  color: #E7E7E7 !important;
+}

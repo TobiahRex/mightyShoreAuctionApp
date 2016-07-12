@@ -1,3 +1,3 @@
 'use strict';
 
-angular.module('MightyShore', ['ui.router', 'ui.bootstrap', 'satellizer', 'ngAnimate', 'toastr', 'ngFileUpload']);
+angular.module('MightyShore', ['ngAnimate', 'ui.router', 'ui.bootstrap', 'satellizer', 'toastr', 'ngFileUpload']);

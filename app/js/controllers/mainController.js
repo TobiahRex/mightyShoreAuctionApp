@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('MightyShore')
-.controller('mainController', function($scope, $state, Auth){
+.controller('mainController', function($scope, $state, Auth, toastr){
 
   function loginCheck(){
     Auth.getProfile()
@@ -10,7 +10,6 @@ angular.module('MightyShore')
       $state.go('profile', {id : res.data._id});
     })
     .catch(err => {
-      console.log('login error: ', err);
       $scope.currentUser = null;
       $state.go('login');
     });
