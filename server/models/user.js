@@ -58,6 +58,9 @@ let userSchema = new mongoose.Schema({
   facebookId    :   {
     type          :     String
   },
+  facebookLink  :   {
+    type          :     String
+  },
   twitterId     :   {
     type          :     String
   },
