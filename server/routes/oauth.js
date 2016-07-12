@@ -81,9 +81,9 @@ router.post('/facebook', (req, res)=>{
             Firstname          : profile.first_name,
             Lastname           : profile.last_name,
             Social             : {facebookLink : profile.link, facebookId : profile.id},
-            Avatar             : Avatar || 'https://graph.facebook.com/v2.3/' + profile.id + '/picture?type=large',
+            Avatar             : 'https://graph.facebook.com/v2.3/' + profile.id + '/picture?type=large',
             CoverPhoto         : profile.cover.source,
-            Username           : Username || profile.name
+            Username           : profile.name
           });
 
           newUser.save((err, savedUser)=>{

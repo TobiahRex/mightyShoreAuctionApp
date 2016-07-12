@@ -25,8 +25,7 @@ let userSchema = new mongoose.Schema({
     required    :   true
   },
   _Password :   {
-    type        :   String,
-    required    :   true
+    type        :   String
   },
   Firstname     :   {
     type      :   String,
