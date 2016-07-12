@@ -1,6 +1,7 @@
 'use strict';
 
 require('dotenv').load();
+const PORT        = process.env.PORT || 4000;
 const mongoose    = require('mongoose');
 const moment      = require('moment');
 const JWT         = require('jsonwebtoken');
@@ -187,11 +188,12 @@ userSchema.methods.profileLink = function(){
     exp :   moment().add(1, 'w').unix()
   };
   let token = JWT.sign(payload, JWT_SECRET);
-  return `http://localhost:3000/api/users/verify/${token}`;
+  return `http://localhost:${PORT}/api/users/verify/${token}`;
 };
 
 userSchema.statics.emailVerify = (token, cb) => {
   if(!token) return cb({ERROR : 'Token not recieved.'});
+
   JWT.verify(token, JWT_SECRET, (err, payload)=> {
     if(err) return res.status(400).send(err);
 

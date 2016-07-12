@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('MightyShore')
-.controller('registerController', function($scope, $state, Auth){
+.controller('registerController', function($scope, $state, $auth, Auth, toastr){
   console.log('registerCtrl');
 
   let userObj = {
@@ -36,8 +36,8 @@ angular.module('MightyShore')
     console.log('userObj: ', userObj);
     Auth.registerUser(userObj)
     .then(dataObj => {
-      $state.$emit('loggedIn');
-      $state.go('verify');
+      toastr.info('Please check your Email for a registration link.', 'Registered!', {iconClass : 'toast-register'})
+      $scope.$emit('loggedIn');
     })
     .catch(err => {
       console.log('register error: ', err);

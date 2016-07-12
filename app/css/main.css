@@ -91,6 +91,7 @@ div.enter-button > button.btn-primary.btn-lg {
 .form-control {
   background-color: #060606;
   font-size: 18px;
+  color : #2a9fd6;
 }
 
 a.social-buttons {
@@ -106,6 +107,12 @@ i.fa.fa-5x.text-primary:hover {
   background-color: rgba(20, 20, 20) !important;
   box-shadow: 0px 4px 97px rgba(74, 255, 0, 1) !important;
   color: rgba(74, 255, 0, 1) !important;
+}
+
+.toast-register {
+  background-color: rgba(20, 20, 20) !important;
+  box-shadow: 0px 4px 97px rgba(255, 145, 0, 1) !important;
+  color:rgba(255, 145, 0, 1) !important;
 }
 
 .toast-title {
