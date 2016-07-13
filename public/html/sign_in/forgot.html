@@ -1,0 +1,15 @@
+<div class="container-fluid">
+  <div class="form-group">
+    <div class="col-xs-6 col-xs-offset-3">
+      <h3>Forgot Password</h3>
+      <hr>
+      <div class="text-center">
+        <input ng-model='user.email' class='form-control' type="text" placeholder="Email">
+        <br>
+        <button ng-click='submitForgot(user)' type='submit' class="btn btn-warning btn-lg">Send Email</button>
+        <hr>
+        <a ui-sref="login"> <u>Login</u> <br> <br><a ui-sref="register"> <u>Register</u> </a> </a>
+      </div>
+    </div>
+  </div>
+</div>

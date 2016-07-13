@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<!--
+  <link rel="stylesheet" type='text/css' href="css/assets/bootswatch-cyborg.min.css">
+  <link rel="stylesheet" type='text/css' href="css/assets/animate.css">
+
+  <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css" media="screen" title="no title" charset="utf-8">
+  <link rel="stylesheet" href="bower_components/angular-toastr/dist/angular-toastr.css" media="screen" title="no title" charset="utf-8">
+
+  <link rel="stylesheet" type='text/css' href="css/main.css"> -->
+
+  <script src="css/assets/jquery.min.js"></script>
+  <script src="css/assets/bootstrap.min.js"></script>
+
+  <script src="bower_components/angular/angular.min.js"></script>
+  <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+  <script src="https://npmcdn.com/angular-toastr/dist/angular-toastr.tpls.js"></script>
+  <script src="bower_components/ng-file-upload/ng-file-upload.js"></script>
+  <script src="bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
+  <script src="bower_components/angular-animate/angular-animate.js"></script>
+  <script src="bower_components/satellizer/satellizer.js"></script>
+
+
+  <!-- inject:css -->
+  <!-- endinject -->
+
+
+
+  <!-- inject:js -->
+  <!-- endinject -->
+
+
+  <title>
+    Mighty Shore
+  </title>
+</head>
+<body ng-app='MightyShore' ng-controller='mainController'>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button class="navbar-toggle collapsed" data-toggle='collapse' data-target="#collapse-nav">
+          <span class="sr-only">Toggle Navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <span class="signature-nav navbar-brand"> <span class="text-primary">by</span><a class='to-splash' ui-sref='splash'> Tobiah Rex</a></span>
+        <u class="nav navbar-nav navbar-left">
+
+          <li class="active"> <a ui-sref='home'>Home</a> </li>
+        </u>
+      </div>
+      <div class="collapse navbar-collapse" id='collapse-nav'>
+        <ul class="nav navbar-nav navbar-right">
+          <!-- if logged in -->
+          <li class="active"><a ng-show='currentUser' ui-sref='profile'>Profile</a></li>
+          <li class="active"><a ng-show='currentUser' ui-sref='logout'>Logout</a></li>
+          <!-- if NOT logged in -->
+          <li class="active"><a ng-hide='currentUser' ui-sref='login'>Login</a></li>
+          <li class="active"><a ng-hide='currentUser' ui-sref='register'>Register</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <ui-view>
+    <!-- TEMPLATES -->
+  </ui-view>
+</div>
+</body>
+</html>

@@ -17,10 +17,3 @@ angular.module('MightyShore')
 
     this.getChats       = userId => $http.get(`/api/profile/${userId}/get_chats`);
 });
-
-
-// class Profile {
-//   getNewitems(userId){
-//
-//   }
-// }
