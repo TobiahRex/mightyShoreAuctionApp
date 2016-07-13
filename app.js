@@ -1,7 +1,7 @@
 'use strict';
 
 require('dotenv').load();
-const PORT        = process.env.PORT || 4000;
+const PORT        = process.env.PORT || 3000;
 const MONGOURL    = process.env.MONGODB_URI || 'mongodb://localhost/AuctionApp';
 
 let morgan        = require('morgan');
