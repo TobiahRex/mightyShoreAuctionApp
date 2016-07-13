@@ -16,7 +16,7 @@ let cookieParser  = require('cookie-parser');
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended : false}));
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'app')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 app.use((req, res, next) => {
   res.handle = (err, dbData) => {

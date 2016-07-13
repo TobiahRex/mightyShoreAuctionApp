@@ -64,7 +64,8 @@ gulp.task('clean:css',  ()=> del([paths.css.output]));
 
 gulp.task('index', ()=>{
   return gulp.src('app/html/index_gulp.html')
-  .pipe(inject(gulp.src(mbf(), {read : false}, {name: 'bower'})))
+  .pipe(inject(gulp.src(mbf(), {read : false}), {name: 'bower.js'}))
+  .pipe(inject(gulp.src(mbf(), {read : false}), {name: 'bower.css'}))
   .pipe(inject(gulp.src(['./public/js/bundle.js', 'app/css/assets/bootswatch-cyborg.min.css', 'app/css/assets/animate.css', 'app/css/main.css'], {read : false})))
   .pipe(gulp.dest('./public'));
 })
