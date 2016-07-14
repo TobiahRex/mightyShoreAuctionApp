@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 const moment = require('moment');
-const User = require('./user');
 
 const phoneTokenSchema = new mongoose.Schema({
   UserId: { type: ObjectId, ref: 'User' },
@@ -16,6 +15,7 @@ phoneTokenSchema.statics.generate = (UserId, cb) => {
     if (err) return cb(err);
     const token = Math.floor(Math.random() * 1000000).toString(16).toUpperCase();
     const newPhoneToken = new PhoneToken({
+      UserId,
       token,
       expiration: moment().add(30, 'mins').toDate(),
     });
@@ -24,16 +24,13 @@ phoneTokenSchema.statics.generate = (UserId, cb) => {
 };
 
 phoneTokenSchema.statics.verify = (UserId, tokenCode, cb) => {
-  User.find({ UserId }, (err1, dbUser) => {
-    PhoneToken.find({ token: tokenCode }, (err2, dbPhoneToken) => {
-      if (err1 || err2) return cb(err1 || err2);
-      if (dbPhoneToken.UserId !== dbUser._id) {
-        return cb(null, false);
-      } else if (dbPhoneToken.token === tokenCode) {
-        return cb(null, true);
-      }
-      return cb(null, false);
-    });
+  PhoneToken.find({ UserId }, (err, dbPhoneToken) => {
+    if (err) return cb(err);
+    if (moment().isAfter(dbPhoneToken.expiration)) return cb(null, false);
+    if (dbPhoneToken.token === tokenCode) {
+      return cb(null, true);
+    }
+    return cb(null, false);
   });
 };
 

@@ -1,9 +1,12 @@
 const express = require('express');
-const router = express.Router();
+const router = new express.Router();
 const User = require('../models/user');
+const PhoneToken = require('../models/phoneToken');
 
 // Authorization Routes
 router.post('/register', (req, res) => User.register(req.body, res.handle));
+
+router.post('/register_phone/:id', (req, res) => PhoneToken.generate(req.params.id, res.handle));
 
 router.route('/login')
 .post((req, res) => User.authenticate(req.body, (err, tokenPkg) =>
@@ -17,6 +20,8 @@ User.emailVerify(req.params.token, err => {
   if (err) res.status(400).send(err);
   res.redirect('/#/login');
 }));
+router.get('/verify_phone/:token/:id', (req, res) =>
+PhoneToken.verify(req.params.id, req.params.token, res.handle));
 
 router.put('/:id/toggle_admin', User.authorize({ Admin: true }), (req, res) => {
   User.findById(req.params.id, (err, dbUser) => {
@@ -26,7 +31,7 @@ router.put('/:id/toggle_admin', User.authorize({ Admin: true }), (req, res) => {
   });
 });
 
-router.get('/profile', User.authorize({ Admin: false }), (req, res) => res.send(req.user));
+router.get('/profile', User.authorize(), (req, res) => res.send(req.user));
 
 router.get('/populate', (req, res) => User.getAllPopulate(res.handle));
 router.route('/:id')

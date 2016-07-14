@@ -1,5 +1,3 @@
-'use strict';
-
 require('dotenv').load();
 const PORT = process.env.PORT || 4000;
 const mongoose = require('mongoose');
@@ -49,7 +47,7 @@ const userSchema = new mongoose.Schema({
   AccountId: { type: ObjectId, ref: 'Account' },
   ChatId: { type: ObjectId, ref: 'Chat' },
 });
-const User = mongoose.model('User', userSchema);
+
 // CRUD
 userSchema.statics.getUser = (userId, cb) => {
   if (!userId) return cb({ ERROR: `Did Not Provide ID; ${userId}` });
@@ -181,4 +179,5 @@ userSchema.methods.createToken = function(){
   return token;
 };
 
+const User = mongoose.model('User', userSchema);
 module.exports = User;
