@@ -1,8 +1,5 @@
-'use strict';
-
-angular.module('MightyShore')
-.controller('forgotController', function($scope, $state){
-
+function forgotController() {
   console.log('forgotCtrl');
-
-});
+}
+angular.module('MightyShore')
+.controller('forgotController', forgotController);

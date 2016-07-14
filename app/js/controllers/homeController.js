@@ -1,10 +1,8 @@
-'use strict';
-
-angular.module('MightyShore')
-.controller('homeController', function($scope, $state, Items, allItems){
+function homeController($scope, $state, Items, allItems) {
   console.log('homeCtrl');
 
-  let allItemsObj = allItems;
+  const allItemsObj = allItems;
   $scope.allItems = allItemsObj.data;
+}
 
-});
+angular.module('MightyShore').controller('homeController', homeController);

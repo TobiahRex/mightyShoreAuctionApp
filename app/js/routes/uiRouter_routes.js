@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('MightyShore')
 .config(function($stateProvider, $urlRouterProvider, $authProvider, toastrConfig){
   $authProvider.loginUrl = '/api/users/login';

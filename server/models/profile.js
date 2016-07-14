@@ -1,32 +1,31 @@
-'use strict';
+const Item = require('./item');
+const User = require('./user');
+const uuid = require('uuid');
 
-const express = require('express');
-const router  = express.Router();
-const Item    = require('./item');
-const User    = require('./user');
-
-let Profile = {
-
-  getNewBids(userId, cb){ // new bids on users' posted Auctions since last login
-  User.findById(req.params.id, (err, dbUser)=> {
-    if(err) return cb(err);
-
-    // Get Items belonging to User
-    Item.find({Owner : dbUser._id})
-    .populate('User')
-    .exec((err, usersAuctions)=> {
-      if(err) return cb(err);
-
-      // Filter Items since last login for NEW bids
-      let newBids = usersAuctions.map(auction => {
-        return auction.Bids.map(bid => bid.BidDate > dbUser.LastLogin ? bid : null );
+const Profile = {
+  getNewBids(userId, cb) { // new bids on users' posted Auctions since last login
+    User.findById(userId, (err1, dbUser) => {
+      if (err1) return cb(err1);
+      // Get Items belonging to User
+      return Item.find({ Owner: dbUser._id })
+      .populate('User')
+      .exec((err2, usersAuctions) => {
+        if (err2) return cb(err2);
+        // Filter Items since last login for NEW bids
+        const newBids = usersAuctions.map(auction =>
+          auction.Bids.map(bid => {
+            if (bid.BidDate > dbUser.LastLogin) return bid;
+            return null;
+          })
+        );
+        return cb(null, newBids);
       });
-      return cb(null, newBids);
     });
-  });
-},
-saveResponse(reqObj, cb){ // users responses on own Auction posts
-  // Saving new Replies or Comments (api post @ click)
+  },
+  saveResponse(reqObj, userId, cb) {
+  // Users' response to posts on own Auction posts
+  //
+  // Saving new Replies or Comments
   // req.body = {
   //   Like      : false / true,
   //   Reply     : false / true,
@@ -37,102 +36,108 @@ saveResponse(reqObj, cb){ // users responses on own Auction posts
   //   ReplyId   :
   //   ReplyBody :
   // };
-  Item.findById(reqObj.Item_id, (err, dbItem)=> {
-    if(err) return cb(err);
-    // find Comment
-    let Comment = dbItem.Comments.map(comment => {
-      return comment.CommentId === reqObj.CommentId ? comment : null;
-    });
-
-    // Determine what types of response to insert
-    let newCommentLike = newReply = newReplyLike = {};
-    if(reqObj.Like) {
-      newCommentLike.LikeId = uuid();
-      newCommentLike.UserId = reqObj.User_id;
-      Comment.Likes.push(newCommentLike);
-
-    } else if(reqObj.Reply) {
-      newReply.UserId     = reqObj.User_id;
-      newReply.ReplyId    = uuid();
-      newReply.Body       = reqObj.ReplyBody;
-      newReply.ReplyDate  = Date.now();
-
-      Comment.Replies.push(newReply);
-
-    } else if(reqObj.ReplyLike){
-      newReplyLike.Likeid = uuid();
-      newReplyLike.Userid = reqObj.user_id;
-      Comment.Replies.forEach(reply=> reply.ReplyId === reqObj.ReplyId ? reply.Likes.push(newReplyLike) : null);
-    };
-    dbItem.save(err=> err ? cb(err) : cb(null, {SUCCESS : `New Response Saved.`}));
-  });
-},
-
-getActiveBids(userId, cb){
-  User.findById(userId, (err, dbUser)=> {
-    if(err) cb(err);
-
-    Item.find({Owner : dbUser._id}, (err, usersItems) => {
-      if(err) cb(err);
-
-      let activeItems = usersItems.map(item => {
-        return item.Status === 'Active' ? item : null;
+    Item.findById(reqObj.Item_id, (err1, dbItem) => {
+      User.findById(userId, (err2, dbUser) => {
+        if (err1 || err2) return cb(err1 || err2);
+        // 1) find Comment
+        const Comment = dbItem.Comments.map(comment => {
+          if (comment.CommentId === reqObj.CommentId) return comment;
+          return null;
+        });
+        if (Comment === null) return cb({ ERROR: 'Required DB Comment not found.' });
+        // Determine what types of responses to insert
+        const newCommentLike = {};
+        const newReply = {};
+        const newReplyLike = {};
+        if (reqObj.Like) {
+          newCommentLike.LikeId = uuid();
+          newCommentLike.UserId = dbUser._id;
+          Comment.Likes.push(newCommentLike);
+        } else if (reqObj.Reply) {
+          newReply.UserId = dbUser._id;
+          newReply.ReplyId = uuid();
+          newReply.Body = reqObj.ReplyBody;
+          newReply.ReplyDate = Date.now();
+          Comment.Replies.push(newReply);
+        } else if (reqObj.ReplyLike) {
+          newReplyLike.Likeid = uuid(); // TODO Replace this UUID instance with it's own Schema.
+          newReplyLike.Userid = dbUser._id;
+          Comment.Replies.forEach(reply => {
+            if (reply.ReplyId === reqObj.ReplyId) return reply.Likes.push(newReplyLike);
+            return null;
+          });
+        }
+        return dbItem.save(err3 => {
+          if (err3) return cb(err3);
+          return cb(null, { SUCCESS: 'New Response Saved.' });
+        });
       });
-      cb(null, activeItems);
     });
-  });
-},
-
-getWatchList(userId, cb){
-  User.findById(userId, (err, dbUser) =>{
-    if(err) cb(err);
-    Item.find({'_id' : {$in : dbUser.Watchlist}}, (err, dbItems)=> {
-      let qErr = new Error(`Batch find for Watchlist UNSAT : ${err}`);
-      err ? cb(qErr) : cb(null, dbItems);
+  },
+  getActiveBids(userId, cb) {
+    User.findById(userId, (err1, dbUser) => {
+      Item.find({ Owner: dbUser._id }, (err2, usersItems) => {
+        if (err1 || err2) return cb(err1 || err2);
+        const activeItems = usersItems.map(item => {
+          if (item.Status === 'Active') return item;
+          return null;
+        });
+        return cb(null, activeItems);
+      });
     });
-  });
-},
-updateBid(reqObj, cb){
+  },
+  getWatchList(userId, cb) {
+    User.findById(userId, (err1, dbUser) => {
+      Item.find({ _id: { $in: dbUser.Watchlist } }, (err2, dbItems) => {
+        if (err1 || err2) return cb(err1 || err2);
+        return cb(null, dbItems);
+      });
+    });
+  },
+  updateBid(reqObj, userId, cb) {
   // reqObj = {
-  //   UserId  :
   //   ItemId  :
   //   Ammount :
   // }
-  let thisUser,
-  thisItem;
-  User.find(reqObj.UserId, (err, dbUser)=> err ? cb(err) : thisUser = dbUser);
-  Item.find(reqObj.ItemId, (err, dbItem)=> err ? cb(err) : thisItem = dbItem);
-
-  let newBid = { UserId  : reqObj.UserId, Ammount : reqObj.Ammount };
-  thisUser.Bids.push(reqObj.ItemId);
-  thisItem.Bids.push(newBid);
-  thisItem.HighestBid = newBid;
-
-  thisItem.save((err, savedItem) => {
-    err ? cb(err) : thisUser.save((err, savedUser) => {
-      err ? cb(err) : cb(null, {savedItem, savedUser});
+  // userId = req.params.id
+    User.find(userId, (err1, dbUser) => {
+      Item.find(reqObj.ItemId, (err2, dbItem) => {
+        if (err1 || err2) return cb(err1 || err2);
+        const thisUser = dbUser;
+        const thisItem = dbItem;
+        const newBid = { UserId: dbUser._id, Ammount: reqObj.Ammount };
+        thisUser.Bids.push(reqObj.ItemId);
+        thisItem.Bids.push(newBid);
+        thisItem.HighestBid = newBid;
+        return thisItem.save((err3, savedItem) => {
+          thisUser.save((err4, savedUser) => {
+            if (err3 || err4) return cb(err3 || err4);
+            return cb(null, { savedItem, savedUser });
+          });
+        });
+      });
     });
-  });
-},
-removeWatch(reqObj, cb){
-  User.find(reqObj.UserId, (err, dbUser)=> {
-    err ? cb(err) :
-    dbUser.Watchlist.filter(item => item !== reqObj.ItemId);
-    dbUser.save((err, savedUser) => err ? cb(err) : cb(null, savedUser));
-  });
-},
-getStats(userId, cb){
-  User.find(userId, (err, dbUser)=> {
-    if(err) cb(err);
-
-    let qErr = new Err(`Batch find for retrieving Stats UNSAT`);
-    Item.find({'_id'  : {$in : dbUser.Wins}}, (err, dbWinItems)=> {
-      err ? cb(qErr) : Item.find({'_id' : {$in : dbUser.Losses}}, (err, dbLossItems)=> {
-        err ? cb(qErr) : cb(null, {dbWinItems, dbLossItems});
-      })
+  },
+  removeWatch(reqObj, userId, cb) {
+    User.find(userId, (err1, dbUser) => {
+      if (err1) return cb(err1);
+      dbUser.Watchlist.filter(item => item !== reqObj.ItemId);
+      return dbUser.save((err, savedUser) => {
+        if (err) return cb(err);
+        return cb(null, savedUser);
+      });
     });
-  });
-}
+  },
+  getStats(userId, cb) {
+    User.find(userId, (err1, dbUser) => {
+      Item.find({ _id: { $in: dbUser.Wins } }, (err2, dbWinItems) => {
+        Item.find({ _id: { $in: dbUser.Losses } }, (err3, dbLossItems) => {
+          if (err1 || err2 || err3) return cb(err1 || err2 || err3);
+          return cb(null, { dbWinItems, dbLossItems });
+        });
+      });
+    });
+  },
 };
 
 module.exports = Profile;

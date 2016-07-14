@@ -1,134 +1,61 @@
 'use strict';
 
 require('dotenv').load();
-const PORT        = process.env.PORT || 4000;
-const mongoose    = require('mongoose');
-const moment      = require('moment');
-const JWT         = require('jsonwebtoken');
-const BCRYPT      = require('bcryptjs');
-const JWT_SECRET  = process.env.JWT_SECRET;
-const ObjectId    = mongoose.Schema.Types.ObjectId;
+const PORT = process.env.PORT || 4000;
+const mongoose = require('mongoose');
+const moment = require('moment');
+const JWT = require('jsonwebtoken');
+const BCRYPT = require('bcryptjs');
+const JWT_SECRET = process.env.JWT_SECRET;
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
-const Mail        = require('./mail');
-const Account     = require('./account');
-const Item        = require('./item');
-const Comment     = require('./comment');
-const Chat        = require('./chat');
-const deepPopulate= require('mongoose-deep-populate')(mongoose);
+const Mail = require('./mail');
+const Account = require('./account');
+const Item = require('./item');
+const Comment = require('./comment');
+const Chat = require('./chat');
+const deepPopulate = require('mongoose-deep-populate')(mongoose);
 
-let userSchema = new mongoose.Schema({
-  Admin     :   {
-    type        :   Boolean,
-    default     :   false
+const userSchema = new mongoose.Schema({
+  Admin: { type: Boolean, default: false },
+  PhoneNumber: { type: String },
+  Username: { type: String, required: true },
+  _Password: { type: String },
+  Firstname: { type: String, required: true },
+  Lastname: { type: String, required: true },
+  Email: { type: String, required: true, unique: true },
+  Verified: { type: Boolean, default: false },
+  Bio: { type: String },
+  Avatar: { type: String },
+  CoverPhoto: { type: String },
+  Social: {
+    facebookId: { type: String },
+    facebookLink: { type: String },
+    twitterId: { type: String },
+    instagramId: { type: String },
+    gitHubId: { type: String },
   },
-  Username  :   {
-    type        :   String,
-    required    :   true
-  },
-  _Password :   {
-    type        :   String
-  },
-  Firstname     :   {
-    type      :   String,
-    required  :   true
-  },
-  Lastname      :   {
-    type      :   String,
-    required  :   true
-  },
-  Email         :   {
-    type      :     'String',
-    required  :     true,
-    unique    :     true
-  },
-  Verified  :   {
-    type      :     Boolean,
-    default   :     false
-  },
-  Bio       :   {
-    type        :     String
-  },
-  Avatar    :   {
-    type        :     String
-  },
-  CoverPhoto:   {
-    type        :     String
-  },
-  Social    :   {   // OAuth user ID's
-  facebookId    :   {
-    type          :     String
-  },
-  facebookLink  :   {
-    type          :     String
-  },
-  twitterId     :   {
-    type          :     String
-  },
-  instagramId   :   {
-    type          :     String
-  },
-  gitHubId      :   {
-    type          :     String
-  }
-},
-LastLogin :   {
-  type        :     Date
-},
-rComments  :   [{
-  type        :   ObjectId,
-  ref         :   'Comment'
-}],
-wComments  :    [{
-  type        :   ObjectId,
-  ref         :   'Comment'
-}],
-rMessages   :   [{
-  type        :   ObjectId,
-  ref         :   'Message'
-}],
-wMessages   :   [{
-  type        :   ObjectId,
-  ref         :   'Message'
-}],
-Watchlist :   [{
-  type      :     ObjectId,
-  ref       :     'Item'
-}],
-Items     :   [{  // items user has posted for auction
-  type        :   ObjectId,
-  ref         :   'Item'
-}],
-Wins      :   [{
-  type        :   ObjectId,
-  ref         :   'Item'
-}],
-Losses    :   [{
-  type        :   ObjectId,
-  ref         :   'Item'
-}],
-Bids      :   [{  // bids user has made
-  type        :   ObjectId,
-  ref         :   'Item'
-}],
-Likes     :   [{  // auctions user has liked
-  type        :   ObjectId,
-  ref         :   'Item'
-}],
-AccountId :   {
-  type        :   ObjectId,
-  ref         :   'Account'
-},
-ChatId    :   {  // chat messages user has written
-  type        :   ObjectId,
-  ref         :   'Chat'
-}
+  LastLogin: { type: Date },
+  rComments: [{ type: ObjectId, ref: 'Comment' }],
+  wComments: [{ type: ObjectId, ref: 'Comment' }],
+  rMessages: [{ type: ObjectId, ref: 'Message' }],
+  wMessages: [{ type: ObjectId, ref: 'Message' }],
+  Watchlist: [{ type: ObjectId, ref: 'Item' }],
+  Items: [{ type: ObjectId, ref: 'Item' }],
+  Wins: [{ type: ObjectId, ref: 'Item' }],
+  Losses: [{ type: ObjectId, ref: 'Item' }],
+  Bids: [{ type: ObjectId, ref: 'Item' }],
+  Likes: [{ type: ObjectId, ref: 'Item' }],
+  AccountId: { type: ObjectId, ref: 'Account' },
+  ChatId: { type: ObjectId, ref: 'Chat' },
 });
-
+const User = mongoose.model('User', userSchema);
 // CRUD
 userSchema.statics.getUser = (userId, cb) => {
-  if(!userId) return cb({ERROR : `Did Not Provide ID; ${userId}`});
-  User.findById(userId, (err, dbUser) => {
-    err ? cb(err) : cb(null, dbUser);
+  if (!userId) return cb({ ERROR: `Did Not Provide ID; ${userId}` });
+  return User.findById(userId, (err, dbUser) => {
+    if (err) return cb(err);
+    return cb(null, dbUser);
   });
 };
 
@@ -156,18 +83,18 @@ userSchema.statics.register = function(newUserObj, cb){
     if(err || dbUser) return cb(err || {ERROR : `That Email has already been taken.`});
   });
 
-  BCRYPT.hash(newUserObj._Password, 12, (err, hash)=> {
-    if(err) cb(err);
+  BCRYPT.hash(newUserObj._Password, 12, (err, hash) => {
+    if (err) cb(err);
 
-    let user = new User({
-      Access    :   newUserObj.Access,
-      Username  :   newUserObj.Username,
-      Firstname :   newUserObj.Firstname,
-      Lastname  :   newUserObj.Lastname,
-      Email     :   newUserObj.Email,
-      _Password :   hash,
-      Bio       :   newUserObj.Bio,
-      Avatar    :   newUserObj.Avatar
+    const user = new User({
+      Access: newUserObj.Access,
+      Username: newUserObj.Username,
+      Firstname: newUserObj.Firstname,
+      Lastname: newUserObj.Lastname,
+      Email: newUserObj.Email,
+      _Password: hash,
+      Bio: newUserObj.Bio,
+      Avatar: newUserObj.Avatar
     });
     user.save((err, savedUser)=> {
       if(err) return cb(err);
@@ -223,24 +150,23 @@ userSchema.statics.authenticate = (userObj, cb) => {
   });
 };
 
-userSchema.statics.authorize = function(clearance = {Admin : false}){
+userSchema.statics.authorize = function(clearance = { Admin: false }){
   return function(req, res, next){
     console.log('req.headers: ', req.headers);
-    let tokenHeader = req.headers.authorization;
+    const tokenHeader = req.headers.authorization;
     console.log('tokenHeader: ', tokenHeader);
-    if(!tokenHeader) return res.status(400).send({ERROR : 'User not found'});
-    let token = tokenHeader.split(' ')[1];
+    if (!tokenHeader) return res.status(400).send({ ERROR: 'User not found' });
+    const token = tokenHeader.split(' ')[1];
 
     JWT.verify(token, JWT_SECRET, (err, payload) => {
-      if(err) return res.status(400).send({ERROR : `HACKER! You are not Authorized!`});
-      User.findById(payload._id)
-      .select({_Password : false})
-      .exec((err, dbUser)=> {
-        if(err || !dbUser){
-          return
-          res.clearCookie('accessToken')
+      if (err) return res.status(400).send({ ERROR: 'HACKER! You are not Authorized!' });
+      return User.findById(payload._id)
+      .select({ _Password: false })
+      .exec((err, dbUser) => {
+        if (err || !dbUser) {
+          return res.clearCookie('accessToken')
           .status(400)
-          .send(err || {error : `User Not Found.`});
+          .send(err || { error: 'User Not Found.' });
         };
         req.user = dbUser;
         next();
@@ -255,5 +181,4 @@ userSchema.methods.createToken = function(){
   return token;
 };
 
-var User = mongoose.model('User', userSchema);
 module.exports = User;

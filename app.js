@@ -1,20 +1,16 @@
-'use strict';
-
 require('dotenv').load();
-const PORT        = process.env.PORT || 3000;
-const MONGOURL    = process.env.MONGODB_URI || 'mongodb://localhost/AuctionApp';
-
-let morgan        = require('morgan');
-let bodyParser    = require('body-parser');
-let path          = require('path');
-let express       = require('express');
-let app           = express();
-let router        = express.Router();
-let mongoose      = require('mongoose');
-let cookieParser  = require('cookie-parser');
+const PORT = process.env.PORT || 3000;
+const MONGOURL = process.env.MONGODB_URI || 'mongodb://localhost/AuctionApp';
+const morgan = require('morgan');
+const bodyParser = require('body-parser');
+const path = require('path');
+const express = require('express');
+const app = express();
+const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 
 app.use(morgan('dev'));
-app.use(bodyParser.urlencoded({extended : false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());

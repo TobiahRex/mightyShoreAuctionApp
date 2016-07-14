@@ -1,22 +1,20 @@
-'use strict';
-
-angular.module('MightyShore')
-.controller('loginController', function($scope, $state, $auth, Auth){
+function loginController($scope, $state, $auth) {
   console.log('loginCtrl');
   $scope.loginUser = loginObj => {
     $auth.login(loginObj)
-    .then(dataObj =>{
-      if(dataObj.status !== 200) return console.log('login failed.', dataObj.data);
+    .then(dataObj => {
+      if (dataObj.status !== 200) console.log('login failed.', dataObj.data);
       $scope.$emit('loggedIn');
       $state.go('profile');
     })
-    .catch(err=> console.log('ERROR: ', err));
+    .catch(err => console.log('ERROR: ', err));
   };
 
   $scope.authenticate = provider => {
     $auth.authenticate(provider)
-    .then(res =>$scope.$emit('loggedIn'))
-    .catch(err=> console.log('ERROR: login error'))
+    .then(() => $scope.$emit('loggedIn'))
+    .catch(err => console.error('ERROR: login error', err));
   };
-});
-9
+}
+
+angular.module('MightyShore').controller('loginController', loginController);

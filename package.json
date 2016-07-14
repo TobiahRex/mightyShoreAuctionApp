@@ -49,6 +49,15 @@
     "morgan": "^1.7.0",
     "path": "^0.12.7",
     "request": "^2.73.0",
-    "sendgrid": "^3.0.5"
+    "sendgrid": "^3.0.5",
+    "speakeasy": "^2.0.0",
+    "twilio": "^2.9.1"
+  },
+  "devDependencies": {
+    "eslint": "^3.0.1",
+    "eslint-config-airbnb": "^9.0.1",
+    "eslint-plugin-import": "^1.10.2",
+    "eslint-plugin-jsx-a11y": "^2.0.1",
+    "eslint-plugin-react": "^5.2.2"
   }
 }
