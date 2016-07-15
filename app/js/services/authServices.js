@@ -1,8 +1,4 @@
-'use strict';
-
-angular.module('MightyShore')
-.service('Auth', function($http){
-
+function Auth($http) {
   this.getUsers = () => $http.get('/api/users');
 
   this.getUser = id => $http.get(`/api/users/${id}`);
@@ -16,5 +12,6 @@ angular.module('MightyShore')
   this.getProfile = () => $http.get('/api/users/profile');
 
   this.toggleAdmin = id => $http.put(`/api/users/${id}/toggle_admin`);
+}
 
-});
+angular.module('MightyShore').service('Auth', Auth);

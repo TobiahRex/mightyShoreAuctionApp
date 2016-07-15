@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const router = new express.Router();
 
 router.use('/users', require('./users'));
 router.use('/comments', require('./comments'));
@@ -7,6 +7,6 @@ router.use('/comments', require('./comments'));
 router.use('/items', require('./items'));
 router.use('/users/profile', require('./profiles'));
 router.use('/oauth', require('./oauth'));
-router.use('/twiml', require('./twiml'));
+router.use('/twiml', require('../twilio/twiml'));
 
 module.exports = router;

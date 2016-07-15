@@ -1,23 +1,18 @@
-'use strict';
-
-angular.module('MightyShore')
-.controller('mainController', function($scope, $state, Auth, toastr){
-
-  function loginCheck(){
+function mainController($scope, $state, Auth) {
+  function loginCheck() {
     Auth.getProfile()
     .then(res => {
       $scope.currentUser = res.data;
-      $state.go('profile', {id : res.data._id});
+      $state.go('profile', { id: res.data._id });
     })
-    .catch(err => {
+    .catch(() => {
       $scope.currentUser = null;
       $state.go('login');
     });
-  };
-
+  }
   loginCheck();
+  $scope.$on('loggedIn', () => loginCheck());
+  $scope.$on('loggedOut', () => loginCheck());
+}
 
-  $scope.$on('loggedIn', function(){loginCheck()});
-  $scope.$on('loggedOut', function(){loginCheck()});
-
-});
+angular.module('MightyShore').controller('mainController', mainController);

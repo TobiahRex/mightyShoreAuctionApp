@@ -1,11 +1,9 @@
-'use strict';
-
-angular.module('MightyShore')
-.controller('profileController', function($state, $scope, Auth, dbProfile, Profile){
+function profileController($state, $scope, Auth, dbProfile) {
   console.log('profileCtrl');
-
-  let profileObj = dbProfile;  // entire profile
+  const profileObj = dbProfile;  // entire profile
   $scope.profile = profileObj.data;
 
   $scope.newItems = () => $scope.$broadcast('getNewItems'); // listener @ newItemController
-});
+}
+
+angular.module('MightyShore').controller('profileController', profileController);

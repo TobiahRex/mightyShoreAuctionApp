@@ -7,8 +7,12 @@
 	"globals": {
 		"$": false,
 		"newUserObj._Password": true,
+		"UserObj._Password": true,
+		"savedUser._Password": true,
 		"dbUser._id": true,
-		"angular": true
+		"angular": true,
+		"User": true,
+		"Comment": true
 	},
 	"env": {
 		"browser": true,

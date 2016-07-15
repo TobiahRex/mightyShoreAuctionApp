@@ -1,4 +1,3 @@
-require('dotenv').load();
 const PORT = process.env.PORT || 4000;
 const mongoose = require('mongoose');
 const moment = require('moment');
@@ -6,13 +5,7 @@ const JWT = require('jsonwebtoken');
 const BCRYPT = require('bcryptjs');
 const JWT_SECRET = process.env.JWT_SECRET;
 const ObjectId = mongoose.Schema.Types.ObjectId;
-
 const Mail = require('./mail');
-const Account = require('./account');
-const Item = require('./item');
-const Comment = require('./comment');
-const Chat = require('./chat');
-const deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 const userSchema = new mongoose.Schema({
   Admin: { type: Boolean, default: false },
@@ -109,21 +102,20 @@ userSchema.statics.register = function(newUserObj, cb){
 userSchema.methods.profileLink = function(){
   let exp = moment().add(1, 'w');
   let payload = {
-    _id :   this._id,
-    exp :   moment().add(1, 'w').unix()
+    _id: this._id,
+    exp: moment().add(1, 'w').unix()
   };
   let token = JWT.sign(payload, JWT_SECRET);
   return `http://localhost:${PORT}/api/users/verify/${token}`;
 };
 
 userSchema.statics.emailVerify = (token, cb) => {
-  if(!token) return cb({ERROR : 'Token not recieved.'});
+  if (!token) return cb({ ERROR: 'Token not recieved.' });
 
-  JWT.verify(token, JWT_SECRET, (err, payload)=> {
-    if(err) return res.status(400).send(err);
-
-    User.findById(payload._id, (err, dbUser)=> {
-      if(err || !dbUser) return cb(err || 'User not found');
+  return JWT.verify(token, JWT_SECRET, (err, payload) => {
+    if (err) return cb(err);
+    return User.findById(payload._id, (err, dbUser) => {
+      if (err || !dbUser) return cb(err || 'User not found');
       dbUser.Verified = true;
       dbUser.save(cb);
     });
@@ -131,52 +123,54 @@ userSchema.statics.emailVerify = (token, cb) => {
 };
 
 // Auth MiddleWare
-userSchema.statics.authenticate = (userObj, cb) => {
-  User.findOne({Username  :   userObj.Username}, (err, dbUser) => {
-    if(err || !dbUser) return cb(err || {ERROR : `Login Failed. Username or Password Inccorect. Try Again.`});
-    BCRYPT.compare(userObj._Password, dbUser._Password, (err, result)=> {
-      if(err || result !== true) return cb({ERROR : 'Login Failed. Username or Password Incorrect. Try Again.'});
+userSchema.statics.authenticate = (UserObj, cb) => {
+  User.findOne({ Username: UserObj.Username}, (err1, dbUser) => {
+    if (err1 || !dbUser) {
+      return cb(err1 || { ERROR: 'Login Failed. Username or Password Inccorect. Try Again.' })
+    }
+    BCRYPT.compare(UserObj._Password, dbUser._Password, (err2, result) => {
+      if (err2 || result !== true){
+        return cb({ ERROR: 'Login Failed. Username or Password Incorrect. Try Again.' })
+       }
     });
-    let token = dbUser.createToken();
+    const token = dbUser.createToken();
     dbUser.LastLogin = Date.now();
-    dbUser.save((err, savedUser)=> {
-      if(err) return cb(err);
+    dbUser.save((err3, savedUser) => {
+      if (err3) return cb(err3);
       savedUser._Password = null;
       console.log('token: ', token);
-      cb(null, {token, savedUser});
+      return cb(null, { token, savedUser });
     });
   });
 };
 
-userSchema.statics.authorize = function(clearance = { Admin: false }){
-  return function(req, res, next){
+userSchema.statics.authorize = function (clearance = { Admin: false }) {
+  return function (req, res, next) {
     console.log('req.headers: ', req.headers);
     const tokenHeader = req.headers.authorization;
     console.log('tokenHeader: ', tokenHeader);
     if (!tokenHeader) return res.status(400).send({ ERROR: 'User not found' });
     const token = tokenHeader.split(' ')[1];
 
-    JWT.verify(token, JWT_SECRET, (err, payload) => {
-      if (err) return res.status(400).send({ ERROR: 'HACKER! You are not Authorized!' });
+    JWT.verify(token, JWT_SECRET, (err1, payload) => {
+      if (err1) return res.status(400).send({ ERROR: 'HACKER! You are not Authorized!' });
       return User.findById(payload._id)
       .select({ _Password: false })
-      .exec((err, dbUser) => {
-        if (err || !dbUser) {
+      .exec((err2, dbUser) => {
+        if (err2 || !dbUser) {
           return res.clearCookie('accessToken')
           .status(400)
-          .send(err || { error: 'User Not Found.' });
-        };
+          .send(err2 || { error: 'User Not Found.' });
+        }
         req.user = dbUser;
-        next();
+        return next();
       });
     });
   };
 };
 
-userSchema.methods.createToken = function(){
-  let thisId = this._id;
-  let token = JWT.sign({_id : this._id}, JWT_SECRET);
-  return token;
+userSchema.methods.createToken = function () {
+  return JWT.sign({ _id: this._id }, JWT_SECRET);
 };
 
 const User = mongoose.model('User', userSchema);

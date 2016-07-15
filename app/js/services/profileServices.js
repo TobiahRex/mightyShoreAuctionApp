@@ -1,19 +1,22 @@
-'use strict';
+function profileService($http) {
+  this.getNewItems = userId => $http.get(`/api/profile/${userId}/new_items`);
 
-angular.module('MightyShore')
-.service('Profile', function($http){
+  this.getOffers = userId => $http.get(`/api/profile/${userId}/new_bids`);
 
-    this.getNewItems    = userId => $http.get(`/api/profile/${userId}/new_items`);
+  this.getPendingBids = userId => $http.get(`/api/profile/${userId}/get_pending`);
 
-    this.getOffers      = userId => $http.get(`/api/profile/${userId}/new_bids`);
+  this.getWatchList = userId => $http.get(`/api/profile/${userId}/get_watchlist`);
 
-    this.getPendingBids = userId => $http.get(`/api/profile/${userId}/get_pending`);
+  this.getStats = userId => $http.get(`/api/profile/${userId}/get_stats`);
 
-    this.getWatchList   = userId => $http.get(`/api/profile/${userId}/get_watchlist`);
+  this.getAccount = userId => $http.get(`/api/profile/${userId}/get_account`);
 
-    this.getStats       = userId => $http.get(`/api/profile/${userId}/get_stats`);
+  this.getChats = userId => $http.get(`/api/profile/${userId}/get_chats`);
 
-    this.getAccount     = userId => $http.get(`/api/profile/${userId}/get_account`);
+  this.sendPhoneToken = UserId => $http.post(`/api/users/register_phone/${UserId}/`);
 
-    this.getChats       = userId => $http.get(`/api/profile/${userId}/get_chats`);
-});
+  this.verifyPhoneToken = (UserId, token) =>
+  $http.post(`/api/users/verify_phone/${token}/${UserId}`);
+}
+
+angular.module('MightyShore').service('Profile', profileService);

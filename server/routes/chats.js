@@ -1,12 +1,10 @@
-'use strict';
-
 const express = require('express');
-const router  = express.Router();
-
+const router = new express.Router();
+const Profile = require('../models/profile');
 
 router.route('/:id/chat')
-.get((req, res)=> Profile.getChats(req.params.id, res.handle))
-.post((req, res)=> {  req.body.UserId = req.params.id;Profile.updateChats(req.body, res.handle)});
+.get((req, res) => Profile.getChats(req.params.id, res.handle))
+.post((req, res) => Profile.updateChats(req.body, req.params.id, res.handle));
 // reqObj = {
 //   UserId  :
 //   ItemId  :
@@ -29,6 +27,4 @@ router.route('/:id/chat')
 //   User_id :
 //   New_Bid :
 // };
-
-
 module.exports = router;

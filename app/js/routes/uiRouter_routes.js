@@ -1,81 +1,78 @@
-angular.module('MightyShore')
-.config(function($stateProvider, $urlRouterProvider, $authProvider, toastrConfig){
+function ngRoutes($stateProvider, $urlRouterProvider, $authProvider, toastrConfig) {
   $authProvider.loginUrl = '/api/users/login';
   $authProvider.signupUrl = '/api/users/register';
 
   $authProvider.facebook({
-    clientId :  '1564954670477132',
-    url      :  '/api/oauth/facebook'
+    clientId: '1564954670477132',
+    url: '/api/oauth/facebook',
   });
 
   $stateProvider
   .state('splash', {
-    url             :    '/',
-    templateUrl     :    'html/splash.html',
-    controller      :    'splashController'
+    url: '/',
+    templateUrl: 'html/splash.html',
+    controller: 'splashController',
   })
   .state('home', {
-    url             :    '/home',
-    templateUrl     :    'html/home.html',
-    controller      :    'homeController',
-    resolve         :    {
-      allItems   :  function(Items, $q, $state){
+    url: '/home',
+    templateUrl: 'html/home.html',
+    controller: 'homeController',
+    resolve: {
+      allItems(Items, $q) {
         return Items.getAll()
         .catch(err => {
-          $scope.allItems = err;
+          if (err) return err;
           return $q.reject();
         });
-      }
-    }
+      },
+    },
   })
   .state('register', {
-    url             :    '/register',
-    templateUrl     :    'html/sign_in/register.html',
-    controller      :    'registerController'
+    url: '/register',
+    templateUrl: 'html/sign_in/register.html',
+    controller: 'registerController',
   })
   .state('verify', {
-    url             :    '/verify',
-    templateUrl     :    'html/sign_in/verify.html'
+    url: '/verify',
+    templateUrl: 'html/sign_in/verify.html',
   })
   .state('verified', {
-    url             :    '/verified',
-    templateUrl     :    'html/sign_in/verified.html'
+    url: '/verified',
+    templateUrl: 'html/sign_in/verified.html',
   })
   .state('unverified', {
-    url             :    '/unverified',
-    templateUrl     :    'html/sign_in/unverified.html'
+    url: '/unverified',
+    templateUrl: 'html/sign_in/unverified.html',
   })
   .state('login', {
-    url             :    '/login',
-    templateUrl     :    'html/sign_in/login.html',
-    controller      :    'loginController'
+    url: '/login',
+    templateUrl: 'html/sign_in/login.html',
+    controller: 'loginController',
   })
   .state('logout', {
-    url             :    '/logout',
-    controller      :    'logoutController'
+    url: '/logout',
+    controller: 'logoutController',
   })
   .state('forgot', {
-    url             :    '/forgot',
-    templateUrl     :    'html/sign_in/forgot.html',
-    controller      :    'forgotController'
+    url: '/forgot',
+    templateUrl: 'html/sign_in/forgot.html',
+    controller: 'forgotController',
   })
   .state('profile', {
-    url             :     '/profile/:id',
-    templateUrl     :     'html/profile.html',
-    controller      :     'profileController',
-    resolve         :     {
-      dbProfile   :     function(Auth, $q, $state){
+    url: '/profile/:id',
+    templateUrl: 'html/profile.html',
+    controller: 'profileController',
+    resolve: {
+      dbProfile(Auth, $q, $state) {
         return Auth.getProfile()
-        .catch(()=>{
+        .catch(() => {
           $state.go('login');
           return $q.reject();
         });
-      }
-    }
+      },
+    },
   });
-
   $urlRouterProvider.otherwise('/');
-
   angular.extend(toastrConfig, {
     allowHtml: false,
     closeButton: false,
@@ -85,7 +82,7 @@ angular.module('MightyShore')
       error: 'toast-error',
       info: 'toast-info',
       success: 'toast-success',
-      warning: 'toast-warning'
+      warning: 'toast-warning',
     },
     messageClass: 'toast-message',
     onHidden: null,  // cb()'s
@@ -95,11 +92,13 @@ angular.module('MightyShore')
     tapToDismiss: true,
     templates: {
       toast: 'directives/toast/toast.html',
-      progressbar: 'directives/progressbar/progressbar.html'
+      progressbar: 'directives/progressbar/progressbar.html',
     },
     timeOut: 5000,
     titleClass: 'toast-title',
-    toastClass: 'toast'
+    toastClass: 'toast',
   });
   // Detailed Info @ https://github.com/Foxandxss/angular-toastr
-});
+}
+
+angular.module('MightyShore').config('ngRoutes', ngRoutes);

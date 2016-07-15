@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 const moment = require('moment');
+const twilio = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 const phoneTokenSchema = new mongoose.Schema({
   UserId: { type: ObjectId, ref: 'User' },
@@ -19,7 +20,10 @@ phoneTokenSchema.statics.generate = (UserId, cb) => {
       token,
       expiration: moment().add(30, 'mins').toDate(),
     });
-    return newPhoneToken.save(cb);
+    return newPhoneToken.save((err, savedPhoneToken)=>{
+      if (err) return cb(err);
+      PhoneToken.sendToken(savedPhoneToken);
+    });
   });
 };
 
@@ -33,5 +37,19 @@ phoneTokenSchema.statics.verify = (UserId, tokenCode, cb) => {
     return cb(null, false);
   });
 };
+
+phoneTokenSchema.methods.sendToken = function (PhoneTokenObj) {
+  User.find(PhoneTokenObj, (err, dbUser) => {
+    if (err) return (err);
+    return twilio.sendMessage({
+      from: process.env.TWILIO_PHONE,
+      to: dbUser.PhoneNumber,
+      body: `Hey there! \nEnter ${token} on your profile page to verify your Account.`,
+    }, (err, res) => {
+      console.error('err: ', err, '\nres: ', res);
+    });
+  });
+};
+
 
 module.exports = PhoneToken;
