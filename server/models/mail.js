@@ -1,6 +1,3 @@
-'use strict';
-
-require('dotenv').load();
 const Mail = {
   verify(savedUser, cb) {
     const helper = require('sendgrid').mail;
